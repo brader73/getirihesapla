@@ -9,7 +9,7 @@ const crimsonPro = Crimson_Pro({ subsets: ["latin"], variable: "--font-crimson-p
 export const metadata: Metadata = {
   title: "GetiriHesapla.com | Finansal Hesaplama Terminali",
   description: "Profesyonel yatırım ve finans hesaplama terminali",
-  manifest: "/manifest.json",
+  manifest: "/getirihesapla/manifest.json",
 };
 
 export const viewport = {
