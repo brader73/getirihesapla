@@ -1,20 +1,20 @@
 {
-  "name": "GetiriHesapla.com Terminal",
-  "short_name": "GetiriHesapla",
+  "name": "Korfu Finance Terminal",
+  "short_name": "KorfuFinance",
   "description": "Profesyonel Finansal Hesaplama ve Yatırım Analiz Terminali",
-  "start_url": "/getirihesapla/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#b45309",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/getirihesapla/icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/getirihesapla/icons/icon-512x512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

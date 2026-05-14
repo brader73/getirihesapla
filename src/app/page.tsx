@@ -1,45 +1,43 @@
-import Header from "@/components/layout/Header";
-import MarketTicker from "@/components/MarketTicker";
-import MarketDashboard from "@/components/MarketDashboard";
+import TVChart from "@/components/tradingview/TVChart";
+import TVMarketOverview from "@/components/tradingview/TVMarketOverview";
 import CalculatorGrid from "@/components/calculators/CalculatorGrid";
 
 export default function Home() {
   return (
     <>
-      {/* Kayan Fiyat Bandı */}
-      <MarketTicker />
-      
-      {/* Üst Menü, Auth ve PDF */}
-      <Header />
-
-      <main className="container mx-auto px-4 py-8 pt-24">
-        <div className="mb-12 text-center mt-10">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white mb-4">
-            GetiriHesapla<span className="text-amber-600">.com</span>
+      <div className="container mx-auto px-4 md:px-8 py-8">
+        <div className="mb-10 text-left">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 dark:text-white mb-2">
+            Piyasa Özeti
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Profesyonel Finansal Hesaplama ve Yatırım Analiz Terminali
+            Güncel piyasa verileri ve gelişmiş analiz araçları.
           </p>
         </div>
 
-        {/* Canlı Piyasalar (Chart.js + WebSockets) */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-serif font-bold text-amber-600 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+        {/* Gelişmiş Grafik (TradingView Advanced Chart) */}
+        <section className="mb-12">
+          <TVChart />
+        </section>
+
+        {/* Canlı Piyasalar (TradingView Market Overview) */}
+        <section className="mb-12">
+          <h2 className="text-xl font-serif font-bold text-amber-600 mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
             Canlı Piyasalar
           </h2>
-          <MarketDashboard />
+          <TVMarketOverview />
         </section>
 
         {/* Hesaplama Araçları */}
         <section id="pdf-export-area" className="pb-10">
-          <h2 className="text-2xl font-serif font-bold text-amber-600 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+          <h2 className="text-xl font-serif font-bold text-amber-600 mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
             Hesaplama Araçları
           </h2>
           <CalculatorGrid />
         </section>
-      </main>
+      </div>
 
-      <footer className="text-center py-8 text-sm text-slate-500 border-t border-slate-200 dark:border-slate-800">
+      <footer className="text-center py-6 text-sm text-slate-500 border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50">
         <p>Bu platform eğitim amaçlıdır. Yatırım tavsiyesi değildir.<br/>Veriler kullanıcı girişlerine dayalı yaklaşık hesaplamalar üretir.</p>
       </footer>
     </>
