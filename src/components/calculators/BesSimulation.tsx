@@ -24,8 +24,8 @@ export default function BesSimulation() {
     const r = expectedReturn / 100 / 12;
     const n = years * 12;
     
-    // Devlet katkısı aylık %30
-    const stateContribution = contribution * 0.30;
+    // Devlet katkısı aylık %20
+    const stateContribution = contribution * 0.20;
     
     // Bileşik faiz ile yatırımın büyümesi
     const userTotal = contribution * ((Math.pow(1 + r, n) - 1) / r);
@@ -62,7 +62,7 @@ export default function BesSimulation() {
       <InputGroup label="Sistemde Kalınacak Süre (Yıl)" value={bes.years} onChange={(e: any) => setBes({ ...bes, years: +e.target.value })} />
       
       <div className="mb-4 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-3 rounded-lg">
-        * Hesaplamada <strong>%30 Devlet Katkısı</strong> avantajı varsayılan olarak fona dahil edilerek aynı oranda nemalandırılmıştır. Yıllık devlet katkısı limitleri hesaba katılmamıştır (Basit Simülasyon).
+        * Hesaplamada <strong>%20 Devlet Katkısı</strong> avantajı varsayılan olarak fona dahil edilerek aynı oranda nemalandırılmıştır. Yıllık devlet katkısı limitleri hesaba katılmamıştır (Basit Simülasyon).
       </div>
 
       <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">BES Getirisini Hesapla</button>
