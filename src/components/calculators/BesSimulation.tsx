@@ -23,15 +23,15 @@ export default function BesSimulation() {
     const { contribution, expectedReturn, years } = bes;
     const r = expectedReturn / 100 / 12;
     const n = years * 12;
-
-    // Devlet katkısı aylık %30
-    const stateContribution = contribution * 0.30;
-
+    
+    // Devlet katkısı aylık %20
+    const stateContribution = contribution * 0.20;
+    
     // Bileşik faiz ile yatırımın büyümesi
     const userTotal = contribution * ((Math.pow(1 + r, n) - 1) / r);
     // Devlet katkısının aynı fonda büyümesi
     const stateTotal = stateContribution * ((Math.pow(1 + r, n) - 1) / r);
-
+    
     const total = userTotal + stateTotal;
     const principal = contribution * n;
 
@@ -56,17 +56,17 @@ export default function BesSimulation() {
   return (
     <Card title="Bireysel Emeklilik (BES) Simülasyonu">
       {error && <div className="mb-4 text-sm text-red-500 font-semibold bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">{error}</div>}
-
+      
       <InputGroup label="Aylık Katkı Payı" value={bes.contribution} onChange={(e: any) => setBes({ ...bes, contribution: +e.target.value })} />
       <InputGroup label="Beklenen Yıllık Fon Getirisi (%)" value={bes.expectedReturn} onChange={(e: any) => setBes({ ...bes, expectedReturn: +e.target.value })} />
       <InputGroup label="Sistemde Kalınacak Süre (Yıl)" value={bes.years} onChange={(e: any) => setBes({ ...bes, years: +e.target.value })} />
-
+      
       <div className="mb-4 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-3 rounded-lg">
-        * Hesaplamada <strong>%30 Devlet Katkısı</strong> avantajı varsayılan olarak fona dahil edilerek aynı oranda nemalandırılmıştır. Yıllık devlet katkısı limitleri hesaba katılmamıştır (Basit Simülasyon).
+        * Hesaplamada <strong>%20 Devlet Katkısı</strong> avantajı varsayılan olarak fona dahil edilerek aynı oranda nemalandırılmıştır. Yıllık devlet katkısı limitleri hesaba katılmamıştır (Basit Simülasyon).
       </div>
 
       <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">BES Getirisini Hesapla</button>
-
+      
       {result && (
         <div className="mt-6">
           <ResultBox show={true} title="Tahmini Toplam BES Fon Değeri" value={formatCurrency(result.total)} note={`${bes.years} yıl sonunda oluşacak tahmini birikiminiz.`} />
