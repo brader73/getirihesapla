@@ -43,6 +43,17 @@ export const posts: BlogPost[] = [
     author: "Kripto Masası",
     imageUrl: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80",
     tags: ["Kripto", "Teknik Analiz", "Bitcoin"]
+  },
+  {
+    id: "4",
+    slug: "pasif-gelir-stratejisi-ve-bilesik-getiri",
+    title: "Portföy Yönetiminde Varlık Çeşitlendirmesi ve Nakit Akışı Optimizasyonu",
+    excerpt: "22 yaşında finansal özgürlük yolculuğu. Portföy yönetimi, USHY tahvil ETF'i ve bileşik getiri hesaplaması üzerine stratejiler.",
+    content: "## Finansal Özgürlük ve Pasif Gelir\n\nFinansal özgürlük, elde edilen pasif gelirin yaşam masraflarını karşılayabildiği noktada başlar. 22 yaşında bu yolculuğa çıkarken, en önemli silahımız **Bileşik Getiri**'nin gücüdür.\n\n### Varlık Çeşitlendirmesi ve USHY\n\nPortföyde sadece büyüme hisseleri değil, düzenli nakit akışı sağlayan enstrümanlar da bulunmalıdır. Örneğin, USHY (iShares Broad USD High Yield Corporate Bond ETF) gibi yüksek getirili şirket tahvilleri ETF'leri, portföye aylık temettü sağlayarak nakit akışını destekler.\n\n### Uzun Vadeli Bakış\n\nBu stratejide sabır esastır. Gelen temettülerin tekrar aynı fona yatırılması, yani bileşik etkinin çalıştırılması, kartopu etkisini tetikleyerek uzun vadede devasa bir portföy yaratılmasını sağlar. Daha fazlası için kendi kişisel blogum olan [Financial Dump](https://22yasindafinansgunlugu.blogspot.com/)'ı ziyaret edebilirsiniz.",
+    date: "2026-05-10",
+    author: "Finans Günlüğü",
+    imageUrl: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Pasif Gelir", "Bileşik Getiri", "Finansal Özgürlük"]
   }
 ];
 
