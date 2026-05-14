@@ -45,8 +45,9 @@ export default function Header() {
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Giriş hatası:", error);
+      alert("Giriş yapılırken bir hata oluştu: " + error.message);
     }
   };
 
