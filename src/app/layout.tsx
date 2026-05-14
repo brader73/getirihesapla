@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Korfu Finance | Profesyonel Finansal Analiz",
   description: "Profesyonel yatırım ve finans hesaplama terminali, borsa, kripto, tahvil ve reel getiri analizleri.",
   keywords: ["finans", "borsa", "kripto", "temettü", "hisse", "yatırım", "analiz"],
-  manifest: "/getirihesapla/manifest.json",
+  manifest: "/manifest.json",
   openGraph: {
     title: "Korfu Finance | Profesyonel Finansal Analiz",
     description: "Profesyonel yatırım ve finans hesaplama terminali.",
