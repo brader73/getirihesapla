@@ -42,6 +42,7 @@ export const viewport = {
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 import TVTicker from "@/components/tradingview/TVTicker";
+import { MobileMenuProvider } from "@/context/MobileMenuContext";
 
 export default function RootLayout({
   children,
@@ -52,21 +53,23 @@ export default function RootLayout({
     <html lang="tr" suppressHydrationWarning>
       <body className={`${inter.variable} ${crimsonPro.variable} font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-300`}>
         <MarketProvider>
-          {/* Ticker at the absolute top */}
-          <div className="z-50 relative">
-            <TVTicker />
-          </div>
-          
-          <div className="flex h-screen overflow-hidden pt-[46px]"> {/* pt-[46px] to account for TVTicker height */}
-            <Sidebar />
-            
-            <div className="flex-1 flex flex-col w-full md:ml-64 overflow-hidden relative">
-              <Header />
-              <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
-                {children}
-              </main>
+          <MobileMenuProvider>
+            {/* Ticker at the absolute top */}
+            <div className="z-50 relative">
+              <TVTicker />
             </div>
-          </div>
+            
+            <div className="flex h-screen overflow-hidden pt-[46px]"> {/* pt-[46px] to account for TVTicker height */}
+              <Sidebar />
+              
+              <div className="flex-1 flex flex-col w-full md:ml-64 overflow-hidden relative">
+                <Header />
+                <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
+                  {children}
+                </main>
+              </div>
+            </div>
+          </MobileMenuProvider>
         </MarketProvider>
       </body>
     </html>

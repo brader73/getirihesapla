@@ -3,9 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useMobileMenu } from "@/context/MobileMenuContext";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { isOpen, setIsOpen } = useMobileMenu();
 
   const menuItems = [
     { name: "Piyasa Özeti", path: "/", icon: "📊" },
@@ -16,7 +18,16 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-0 overflow-y-auto border-r border-slate-800 z-40 transition-transform duration-300 transform -translate-x-full md:translate-x-0">
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 md:hidden" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      
+      <aside className={`w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-[46px] md:top-0 overflow-y-auto border-r border-slate-800 z-50 transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
       <div className="p-6 border-b border-slate-800">
         <h1 className="text-2xl font-serif font-bold text-white tracking-wide">
           Korfu<span className="text-amber-500">Finance</span>
@@ -32,6 +43,7 @@ export default function Sidebar() {
               <li key={item.name}>
                 <Link
                   href={item.path}
+                  onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                     isActive
                       ? "bg-amber-600/10 text-amber-500 font-semibold border border-amber-600/20"
@@ -56,5 +68,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

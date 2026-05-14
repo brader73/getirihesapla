@@ -6,12 +6,14 @@ import { signInWithPopup, signOut, onAuthStateChanged, User } from "firebase/aut
 import { doc, getDoc } from "firebase/firestore";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useMobileMenu } from "@/context/MobileMenuContext";
 
 export default function Header() {
   const [user, setUser] = useState<User | null>(null);
   const [isPremium, setIsPremium] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const { setIsOpen } = useMobileMenu();
 
   useEffect(() => {
     // Check initial dark mode state
@@ -116,7 +118,17 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between px-4 md:px-6 py-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div className="flex items-center gap-3">
-        {/* Mobile menu button could go here */}
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="md:hidden p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          aria-label="Menüyü Aç"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
         <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 md:hidden">
           Korfu Finance
         </h2>
