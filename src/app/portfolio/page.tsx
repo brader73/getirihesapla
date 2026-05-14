@@ -45,6 +45,13 @@ export default function PortfolioPage() {
     currency: "TRY"
   });
 
+  // Search State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -73,6 +80,59 @@ export default function PortfolioPage() {
     return () => unsubscribe();
   }, [user]);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    if (val.length < 2) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+    
+    setIsSearching(true);
+    setShowDropdown(true);
+    
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/finance/search?q=${encodeURIComponent(val)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSearchResults(data);
+        }
+      } catch (err) {
+        console.error("Arama hatası", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 500);
+  };
+
+  const handleSelectSymbol = async (item: any) => {
+    setSearchQuery(item.symbol);
+    setShowDropdown(false);
+    
+    let type = "Hisse (Global)";
+    if (item.exchange === "IST") type = "Hisse (BIST)";
+    if (item.typeDisp === "Cryptocurrency") type = "Kripto";
+    
+    setFormData(prev => ({ ...prev, symbol: item.symbol, name: item.shortname, type }));
+    
+    try {
+      const res = await fetch(`/api/finance/quote?symbol=${encodeURIComponent(item.symbol)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setFormData(prev => ({
+          ...prev,
+          currentPrice: data.price?.toString() || "",
+          currency: data.currency === "TRY" ? "TRY" : "USD"
+        }));
+      }
+    } catch (err) {
+      console.error("Fiyat getirme hatası", err);
+    }
+  };
+
   const handleAddAsset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -91,7 +151,8 @@ export default function PortfolioPage() {
       });
       setIsModalOpen(false);
       setFormData({ symbol: "", name: "", type: "Hisse (BIST)", amount: "", avgPrice: "", currentPrice: "", currency: "TRY" });
-    } catch (error) {
+      setSearchQuery("");
+    } catch (error: any) {
       console.error("Varlık eklenirken hata oluştu:", error);
       alert("Bir hata oluştu.");
     } finally {
@@ -362,9 +423,39 @@ export default function PortfolioPage() {
             </div>
             <form onSubmit={handleAddAsset} className="p-6 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sembol (Örn: THYAO)</label>
-                  <input required value={formData.symbol} onChange={e => setFormData({...formData, symbol: e.target.value})} className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white" />
+                <div className="relative">
+                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sembol Ara (Örn: THY)</label>
+                  <input 
+                    value={searchQuery} 
+                    onChange={handleSearchChange} 
+                    placeholder="Sembol veya şirket adı..."
+                    onFocus={() => { if(searchQuery.length >= 2) setShowDropdown(true); }}
+                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                  />
+                  {/* Dropdown Menu */}
+                  {showDropdown && (
+                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                      {isSearching ? (
+                        <div className="p-3 text-sm text-slate-500 text-center">Aranıyor...</div>
+                      ) : searchResults.length > 0 ? (
+                        searchResults.map((res, i) => (
+                          <div 
+                            key={i} 
+                            onClick={() => handleSelectSymbol(res)}
+                            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b border-slate-100 dark:border-slate-700/50 last:border-0"
+                          >
+                            <div className="flex justify-between items-center">
+                              <span className="font-bold text-slate-800 dark:text-slate-200">{res.symbol}</span>
+                              <span className="text-xs text-slate-400">{res.typeDisp}</span>
+                            </div>
+                            <div className="text-xs text-slate-500 truncate">{res.shortname}</div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-3 text-sm text-slate-500 text-center">Sonuç bulunamadı</div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Döviz</label>
@@ -400,8 +491,8 @@ export default function PortfolioPage() {
                   <input required type="number" step="any" value={formData.avgPrice} onChange={e => setFormData({...formData, avgPrice: e.target.value})} className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Güncel</label>
-                  <input required type="number" step="any" value={formData.currentPrice} onChange={e => setFormData({...formData, currentPrice: e.target.value})} className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white" />
+                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Güncel Fiyat</label>
+                  <input required type="number" step="any" value={formData.currentPrice} onChange={e => setFormData({...formData, currentPrice: e.target.value})} className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-amber-50 dark:bg-slate-900 text-slate-900 dark:text-white border-l-4 border-l-amber-500" placeholder="Otomatik..." />
                 </div>
               </div>
 
