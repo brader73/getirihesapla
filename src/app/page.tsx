@@ -1,5 +1,5 @@
 import TVChart from "@/components/tradingview/TVChart";
-import TVMarketOverview from "@/components/tradingview/TVMarketOverview";
+import RealMarketOverview from "@/components/tradingview/RealMarketOverview";
 import TVScreener from "@/components/tradingview/TVScreener";
 import CalculatorGrid from "@/components/calculators/CalculatorGrid";
 
@@ -21,12 +21,12 @@ export default function Home() {
           <TVChart />
         </section>
 
-        {/* Canlı Piyasalar (TradingView Market Overview) */}
+        {/* Canlı Piyasalar (Gerçek Zamanlı) */}
         <section className="mb-12">
           <h2 className="text-xl font-serif font-bold text-amber-600 mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
             Öne Çıkan Piyasalar
           </h2>
-          <TVMarketOverview />
+          <RealMarketOverview />
         </section>
 
         {/* Evrensel Piyasa Tarayıcı (Screener) */}

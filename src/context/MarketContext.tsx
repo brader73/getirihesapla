@@ -6,6 +6,12 @@ export const ASSETS = [
   { id: "BTCUSDT", name: "Bitcoin", type: "crypto", symbol: "BTCUSDT" },
   { id: "ETHUSDT", name: "Ethereum", type: "crypto", symbol: "ETHUSDT" },
   { id: "XU100", name: "BIST 100", type: "yahoo", symbol: "XU100.IS" },
+  { id: "THYAO", name: "Türk Hava Yolları", type: "yahoo", symbol: "THYAO.IS" },
+  { id: "TUPRS", name: "Tüpraş", type: "yahoo", symbol: "TUPRS.IS" },
+  { id: "KCHOL", name: "Koç Holding", type: "yahoo", symbol: "KCHOL.IS" },
+  { id: "AKBNK", name: "Akbank", type: "yahoo", symbol: "AKBNK.IS" },
+  { id: "ISCTR", name: "İş Bankası", type: "yahoo", symbol: "ISCTR.IS" },
+  { id: "EREGL", name: "Erdemir", type: "yahoo", symbol: "EREGL.IS" },
   { id: "USDTRY", name: "USD/TRY", type: "crypto", symbol: "USDTTRY" },
   { id: "GOLD", name: "Altın (Ons)", type: "yahoo", symbol: "GC=F" },
 ];
