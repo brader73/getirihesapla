@@ -1,4 +1,3 @@
-import DynamicMarketPanel from "@/components/tradingview/DynamicMarketPanel";
 import RealMarketOverview from "@/components/tradingview/RealMarketOverview";
 import TVScreener from "@/components/tradingview/TVScreener";
 import CalculatorGrid from "@/components/calculators/CalculatorGrid";
@@ -7,19 +6,7 @@ export default function Home() {
   return (
     <>
       <div className="container mx-auto px-4 md:px-8 py-8">
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 dark:text-white mb-2">
-            Piyasa Özeti
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Güncel piyasa verileri ve gelişmiş grafik analizi.
-          </p>
-        </div>
 
-        {/* Dinamik Piyasa Paneli (Ortalanmış Arama & Watchlist) */}
-        <section className="mb-12">
-          <DynamicMarketPanel fullHeight={false} />
-        </section>
 
         {/* Canlı Piyasalar (Gerçek Zamanlı) */}
         <section className="mb-12">
