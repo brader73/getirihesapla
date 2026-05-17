@@ -1,4 +1,4 @@
-import TVChart from "@/components/tradingview/TVChart";
+import DynamicMarketPanel from "@/components/tradingview/DynamicMarketPanel";
 import RealMarketOverview from "@/components/tradingview/RealMarketOverview";
 import TVScreener from "@/components/tradingview/TVScreener";
 import CalculatorGrid from "@/components/calculators/CalculatorGrid";
@@ -16,9 +16,9 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Gelişmiş Grafik (TradingView Advanced Chart) */}
+        {/* Dinamik Piyasa Paneli (Arama & Watchlist) */}
         <section className="mb-12">
-          <TVChart />
+          <DynamicMarketPanel fullHeight={false} />
         </section>
 
         {/* Canlı Piyasalar (Gerçek Zamanlı) */}

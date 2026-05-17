@@ -1,77 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-
-// Declaration to let TypeScript know about the TradingView property on the window object
-declare global {
-  interface Window {
-    TradingView: any;
-  }
-}
+import React from 'react';
+import DynamicMarketPanel from '@/components/tradingview/DynamicMarketPanel';
 
 export default function ProGrafikPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    // Only load script once
-    if (document.getElementById('tradingview-widget-script')) {
-      setIsLoaded(true);
-      setTimeout(initWidget, 100); // Küçük bir gecikme ile DOM'un hazır olmasını bekle
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.id = 'tradingview-widget-script';
-    script.src = 'https://s3.tradingview.com/tv.js';
-    script.async = true;
-    script.onload = () => {
-      initWidget();
-      setIsLoaded(true);
-    };
-    
-    document.body.appendChild(script);
-
-    return () => {
-      // Clean up script if unmounted before loading
-      // (Usually we keep the script in the document for fast re-renders)
-    };
-  }, []);
-
-  const initWidget = () => {
-    if (typeof window.TradingView !== 'undefined' && containerRef.current) {
-      new window.TradingView.widget({
-        autosize: true,
-        symbol: "BIST:THYAO", // Varsayılan BIST 100 verisi widget'ta sorunlu olabiliyor, en hacimli hisse THYAO seçildi
-        interval: "D",
-        timezone: "Europe/Istanbul",
-        theme: "dark",
-        style: "1", // Mum grafiği
-        locale: "tr",
-        enable_publishing: false,
-        backgroundColor: "rgba(2, 6, 23, 1)", // Tailwind #020617 (slate-950/background)
-        gridColor: "rgba(30, 41, 59, 0.4)", // İnce slate-800 grid
-        hide_top_toolbar: false,
-        hide_legend: false,
-        save_image: true,
-        container_id: containerRef.current.id,
-        toolbar_bg: "#0f172a", // slate-900
-        studies: [
-          "RSI@tv-basicstudies", // Göreceli Güç Endeksi
-          "MACD@tv-basicstudies", // Hareketli Ortalama Yakınsama/Iraksama
-          "MASimple@tv-basicstudies" // Basit Hareketli Ortalama
-        ],
-        disabled_features: [
-          "header_symbol_search", // Kendi sembol aramamızı entegre etmemek için TradingView'inkini kullanabiliriz, ama şimdilik kendi UI'ı kalsın
-        ],
-        enabled_features: [
-          "study_templates",
-          "use_localstorage_for_settings"
-        ]
-      });
-    }
-  };
-
   return (
     <div className="bg-[#020617] h-[calc(100vh-46px)] md:h-screen w-full flex flex-col relative overflow-hidden font-sans">
       
@@ -99,23 +31,8 @@ export default function ProGrafikPage() {
       </header>
 
       {/* Main Chart Area */}
-      <div className="flex-1 w-full relative p-2 md:p-4 bg-gradient-to-b from-[#020617] to-slate-950">
-        {!isLoaded && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-sm z-20 rounded-2xl">
-            <div className="w-12 h-12 border-4 border-slate-700 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
-            <p className="text-indigo-400 font-bold animate-pulse">Grafik Terminali Yükleniyor...</p>
-            <p className="text-slate-500 text-sm mt-2">Hisse, Kripto, Endeks ve Emtia verileri hazırlanıyor</p>
-          </div>
-        )}
-        
-        {/* TradingView Container */}
-        <div className="w-full h-full rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative bg-[#020617]">
-          <div 
-            id="korfu-tradingview-widget" 
-            ref={containerRef} 
-            className="w-full h-full absolute inset-0"
-          />
-        </div>
+      <div className="flex-1 w-full relative p-2 md:p-6 bg-gradient-to-b from-[#020617] to-slate-950 overflow-hidden">
+        <DynamicMarketPanel fullHeight={true} />
       </div>
       
     </div>
