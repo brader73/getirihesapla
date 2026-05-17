@@ -11,7 +11,6 @@ export default function Sidebar() {
 
   const menuItems = [
     { name: "Piyasa Özeti", path: "/", icon: "📊" },
-    { name: "Pro Grafik", path: "/pro-grafik", icon: "📈" },
     { name: "Makro Ekonomi", path: "/macro", icon: "🌍" },
     { name: "AI Haber Merkezi", path: "/haberler", icon: "📰" },
     { name: "Fiyat Alarmları", path: "/alerts", icon: "🔔" },
