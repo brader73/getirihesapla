@@ -1,4 +1,4 @@
-import DynamicMarketPanel from "@/components/tradingview/DynamicMarketPanel";
+import MarketQuotesTable from "@/components/tradingview/MarketQuotesTable";
 import RealMarketOverview from "@/components/tradingview/RealMarketOverview";
 import TVScreener from "@/components/tradingview/TVScreener";
 import CalculatorGrid from "@/components/calculators/CalculatorGrid";
@@ -12,13 +12,13 @@ export default function Home() {
             Piyasa Özeti
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Güncel piyasa verileri ve gelişmiş analiz araçları.
+            Güncel piyasa verileri ve detaylı piyasa tablosu.
           </p>
         </div>
 
-        {/* Dinamik Piyasa Paneli (Arama & Watchlist) */}
+        {/* Investing.com Tarzı Geniş Piyasa Tablosu */}
         <section className="mb-12">
-          <DynamicMarketPanel fullHeight={false} />
+          <MarketQuotesTable />
         </section>
 
         {/* Canlı Piyasalar (Gerçek Zamanlı) */}
