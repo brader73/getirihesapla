@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 // Types
-type Category = "Tümü" | "Ekonomi" | "Borsa" | "Kripto" | "Makro" | "Merkez Bankası" | "Şirketler";
+type Category = "Tümü" | "Ekonomi" | "Borsa" | "Kripto" | "Makro" | "Merkez Bankası" | "Şirketler" | "Kaydedilenler";
 type Sentiment = "Pozitif" | "Negatif" | "Nötr";
 type RiskLevel = "Düşük" | "Orta" | "Yüksek";
 

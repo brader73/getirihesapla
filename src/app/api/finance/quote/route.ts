@@ -12,9 +12,9 @@ export async function GET(request: Request) {
   const symbols = symbolsParam.split(',').map((s) => s.trim());
 
   try {
-    const quotes = await yahooFinance.quote(symbols);
+    const quotes: any = await yahooFinance.quote(symbols);
 
-    if (!quotes || quotes.length === 0) {
+    if (!quotes || (Array.isArray(quotes) && quotes.length === 0)) {
       return NextResponse.json({ error: 'Symbols not found' }, { status: 404 });
     }
 
