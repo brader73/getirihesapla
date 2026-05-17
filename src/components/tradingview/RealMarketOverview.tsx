@@ -15,16 +15,26 @@ import { Line } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler);
 
+import LivePriceCard from './LivePriceCard';
+
 const TABS = [
+  { id: 'all', label: 'Tümü' },
   { id: 'bist', label: 'Borsa İstanbul' },
   { id: 'crypto', label: 'Kripto & Döviz' },
 ];
 
 export default function RealMarketOverview() {
   const { dataMap } = useMarketData();
-  const [activeTab, setActiveTab] = useState('bist');
+  const [activeTab, setActiveTab] = useState('all');
+  const [isClient, setIsClient] = useState(false);
+
+  // Fix hydration issues with favorites
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const filteredAssets = ASSETS.filter(asset => {
+    if (activeTab === 'all') return true;
     if (activeTab === 'bist') {
       return ['XU100', 'THYAO', 'TUPRS', 'KCHOL', 'AKBNK', 'ISCTR', 'EREGL'].includes(asset.id);
     } else {
@@ -33,15 +43,32 @@ export default function RealMarketOverview() {
   });
 
   return (
-    <div className="w-full bg-slate-900/60 backdrop-blur-2xl rounded-3xl border border-slate-700/50 shadow-2xl shadow-black/50 overflow-hidden">
-      <div className="border-b border-slate-700/50 px-6 pt-5 flex gap-6 bg-slate-800/20">
+    <div className="w-full bg-slate-900/80 backdrop-blur-3xl rounded-3xl border border-slate-700/50 shadow-2xl shadow-black/80 overflow-hidden">
+      
+      {/* Live Market Status Bar */}
+      <div className="bg-[#0a0f18] border-b border-slate-800 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/20">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+          </div>
+          <span className="text-emerald-400 font-bold tracking-widest text-sm uppercase">Piyasalar Açık (Canlı Veri)</span>
+        </div>
+        <div className="text-xs text-slate-500 font-medium">
+          Son Güncelleme: Anlık
+        </div>
+      </div>
+
+      <div className="border-b border-slate-700/50 px-6 pt-5 flex gap-6 bg-slate-800/20 overflow-x-auto no-scrollbar">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`pb-4 px-2 text-sm md:text-base font-bold tracking-wide transition-all border-b-2 relative ${
+            className={`pb-4 px-2 text-sm md:text-base font-bold tracking-wide transition-all border-b-2 whitespace-nowrap relative ${
               activeTab === tab.id
-                ? 'border-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]'
+                ? 'border-indigo-400 text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -55,85 +82,20 @@ export default function RealMarketOverview() {
           {filteredAssets.map((asset) => {
             const data = dataMap[asset.id];
 
-            if (!data) {
+            if (!data || !isClient) {
               return (
-                <div key={asset.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 animate-pulse h-32 flex flex-col justify-center items-center">
-                  <div className="w-8 h-8 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-2"></div>
-                  <div className="text-slate-400 text-sm">Yükleniyor...</div>
+                <div key={asset.id} className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-5 animate-pulse h-48 flex flex-col justify-between">
+                  <div className="flex justify-between w-full">
+                    <div className="h-4 bg-slate-700 rounded w-1/3"></div>
+                    <div className="h-4 bg-slate-700 rounded w-1/4"></div>
+                  </div>
+                  <div className="h-8 bg-slate-700 rounded w-1/2 my-4"></div>
+                  <div className="w-8 h-8 self-center border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
                 </div>
               );
             }
 
-            const isPositive = data.change >= 0;
-            const color = isPositive ? '#10b981' : '#f43f5e'; // emerald-500 / rose-500
-            const bgColor = isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)';
-            const cardTint = isPositive ? 'bg-emerald-950/20 border-emerald-900/30' : 'bg-rose-950/20 border-rose-900/30';
-
-            const chartData = {
-              labels: data.labels,
-              datasets: [
-                {
-                  data: data.history,
-                  borderColor: color,
-                  backgroundColor: bgColor,
-                  borderWidth: 2,
-                  pointRadius: 0,
-                  fill: true,
-                  tension: 0.4, // Smooth curve
-                },
-              ],
-            };
-
-            const chartOptions = {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { display: false }, tooltip: { enabled: false } },
-              scales: { x: { display: false }, y: { display: false } },
-              animation: { duration: 0 },
-              layout: { padding: 0 }
-            };
-
-            // Format price
-            let priceFormatted = data.price.toFixed(2);
-            if (asset.type === 'yahoo' && asset.id !== 'XU100' && asset.id !== 'GOLD') {
-               priceFormatted = `₺${data.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            } else if (asset.id === 'USDTRY') {
-               priceFormatted = `₺${data.price.toFixed(4)}`;
-            } else if (asset.type === 'crypto') {
-               priceFormatted = `$${data.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            } else if (asset.id === 'GOLD') {
-               priceFormatted = `$${data.price.toFixed(2)}`;
-            } else if (asset.id === 'XU100') {
-               priceFormatted = data.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-
-            return (
-              <div 
-                key={asset.id} 
-                className={`relative overflow-hidden rounded-2xl p-5 transition-all duration-300 ease-out backdrop-blur-md border ${cardTint} hover:-translate-y-1 hover:shadow-xl ${isPositive ? 'hover:shadow-emerald-500/10 hover:border-emerald-500/50' : 'hover:shadow-rose-500/10 hover:border-rose-500/50'} group`}
-              >
-                {/* Heatmap Glow Effect */}
-                <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl opacity-20 rounded-full pointer-events-none transition-opacity group-hover:opacity-40 ${isPositive ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-
-                <div className="flex justify-between items-start mb-3 relative z-10">
-                  <div className="flex flex-col">
-                    <span className="font-bold text-slate-100 text-lg group-hover:text-amber-400 transition-colors drop-shadow-sm">{asset.name}</span>
-                    <span className="text-xs text-slate-400 font-medium tracking-wider">{asset.symbol}</span>
-                  </div>
-                  <div className={`text-sm font-bold px-2.5 py-1 rounded-lg backdrop-blur-sm border ${isPositive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 'bg-rose-500/20 text-rose-400 border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]'}`}>
-                    {isPositive ? '▲' : '▼'} {Math.abs(data.change).toFixed(2)}%
-                  </div>
-                </div>
-                
-                <div className="text-3xl font-black text-white mb-4 tracking-tight relative z-10 drop-shadow-md">
-                  {priceFormatted}
-                </div>
-                
-                <div className="h-20 w-full relative z-10 -mx-1">
-                  <Line data={chartData} options={chartOptions as any} />
-                </div>
-              </div>
-            );
+            return <LivePriceCard key={asset.id} asset={asset} data={data} />;
           })}
         </div>
       </div>

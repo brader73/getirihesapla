@@ -180,7 +180,7 @@ export const MarketProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
       }
-    }, 60000);
+    }, 10000); // 10 seconds for more real-time feel
 
     return () => {
       isMounted = false;
