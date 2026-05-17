@@ -1,22 +1,43 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- KF Monogram & Bullish Arrow - App Icon -->
-  <rect width="1024" height="1024" rx="220" fill="#0A192F" />
-  <g transform="translate(0, -20)">
-    <!-- F Gövdesi ve K'nın Alt Bacağı (White) -->
-    <g stroke="#FFFFFF" stroke-width="52" stroke-linecap="square" stroke-linejoin="miter" fill="none">
-      <path d="M 300,300 L 300,700" />
-      <path d="M 300,300 L 500,300" />
-      <path d="M 300,500 L 450,500" />
-      <path d="M 400,500 L 600,700" />
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#B48E36" />
+      <stop offset="50%" stop-color="#F2C94C" />
+      <stop offset="100%" stop-color="#F6DCA0" />
+    </linearGradient>
+    <linearGradient id="silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+    <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="4" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Arka Plan -->
+  <rect width="1024" height="1024" rx="220" fill="#060b13" />
+
+  <g transform="translate(0, 0)">
+    <!-- Dış Altın Çember -->
+    <path d="M 880,350 A 420 420 0 1 1 720,150" stroke="url(#gold)" stroke-width="24" fill="none" stroke-linecap="round" filter="url(#glow)" />
+
+    <!-- Yükselen Çubuklar -->
+    <g filter="url(#glow)">
+      <rect x="360" y="760" width="50" height="80" fill="url(#gold)" rx="8" />
+      <rect x="440" y="700" width="50" height="140" fill="url(#gold)" rx="8" />
+      <rect x="520" y="620" width="50" height="220" fill="url(#gold)" rx="8" />
+      <rect x="600" y="520" width="50" height="320" fill="url(#gold)" rx="8" />
+      <rect x="680" y="400" width="50" height="440" fill="url(#gold)" rx="8" />
     </g>
 
-    <!-- Bullish Trend Ok'u (K'nın Üst Bacağı - Gold) -->
-    <g stroke="#D4AF37" stroke-width="52" stroke-linecap="square" stroke-linejoin="miter" fill="none">
-      <path d="M 300,600 L 750,150" />
-      <path d="M 550,150 L 750,150 L 750,350" />
-    </g>
+    <!-- KF Metni -->
+    <text x="440" y="620" font-family="'Arial Black', 'Segoe UI Black', Impact, sans-serif" font-size="380" font-weight="900" fill="url(#silver)" letter-spacing="-25" text-anchor="middle" filter="url(#glow)">KF</text>
 
-    <!-- Tipografi -->
-    <text x="512" y="900" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="90" font-weight="800" letter-spacing="12" fill="#FFFFFF" text-anchor="middle">KORFU<tspan fill="#D4AF37" font-weight="300">FINANCE</tspan></text>
+    <!-- Dev Yükseliş Oku -->
+    <g filter="url(#glow)">
+      <path d="M 150,650 Q 500,950 840,240" stroke="url(#gold)" stroke-width="56" fill="none" stroke-linecap="round" />
+      <polygon points="960,100 750,190 890,340" fill="url(#gold)" stroke="url(#gold)" stroke-width="10" stroke-linejoin="round" />
+    </g>
   </g>
 </svg>
