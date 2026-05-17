@@ -11,7 +11,12 @@ export default function Sidebar() {
 
   const menuItems = [
     { name: "Piyasa Özeti", path: "/", icon: "📊" },
+    { name: "Pro Grafik", path: "/pro-grafik", icon: "📈" },
+    { name: "Makro Ekonomi", path: "/macro", icon: "🌍" },
+    { name: "AI Haber Merkezi", path: "/haberler", icon: "📰" },
+    { name: "Fiyat Alarmları", path: "/alerts", icon: "🔔" },
     { name: "Hesaplama Araçları", path: "/#pdf-export-area", icon: "🧮" },
+    { name: "Portföy Simülasyonu", path: "/portfoy-simulasyonu", icon: "🔮" },
     { name: "Blog & Analiz", path: "/blog", icon: "📰" },
     { name: "Portföyüm", path: "/portfolio", icon: "💼" },
     { name: "Ayarlar", path: "/settings", icon: "⚙️" },
@@ -64,10 +69,10 @@ export default function Sidebar() {
 
       <div className="p-4 border-t border-slate-800">
         <div className="bg-slate-800 rounded-xl p-4">
-          <p className="text-xs text-slate-400 mb-2">Premium Sürüm</p>
-          <button className="w-full bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold py-2 rounded-lg transition-colors">
-            Yükselt
-          </button>
+          <p className="text-xs text-slate-400 mb-2 font-medium">Hesap Durumu</p>
+          <Link href="/premium" className="block w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-sm font-bold py-2.5 rounded-lg transition-all text-center shadow-[0_0_15px_rgba(217,119,6,0.2)]">
+            Premium'a Yükselt
+          </Link>
         </div>
       </div>
     </aside>

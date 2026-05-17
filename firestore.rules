@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Tüm koleksiyonları kapalı tutarak başla (Zero Trust Security Model)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Kullanıcıya ait özel alanların korunması (Protected Routes / Auth Guard)
+    match /users/{userId} {
+      // Yalnızca giriş yapmış olan ve kendi UID'sine sahip olan kullanıcı okuyup/yazabilir
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Kullanıcının alt koleksiyonlarına (portföy, alarmlar, geçmiş ödemeler vb.) erişim izni
+      match /portfolio/{assetId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      match /alerts/{alertId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /watchlist/{watchId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /transactions/{transactionId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        // Kullanıcı yeni işlem ekleyebilir, ancak var olanı silemez (log bütünlüğü)
+        allow create: if request.auth != null && request.auth.uid == userId;
+        allow update, delete: if false; 
+      }
+
+      match /payments/{paymentId} {
+        // Ödeme geçmişini sadece okuyabilir, backend veya stripe webhook yazmalıdır
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null && request.auth.uid == userId; // Mock amaçlı izin, prod ortamda backend üzerinden kısıtlanmalı
+      }
+    }
+  }
+}

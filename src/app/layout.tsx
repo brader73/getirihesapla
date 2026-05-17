@@ -48,6 +48,9 @@ import Sidebar from "@/components/layout/Sidebar";
 import LoadingScreen from "@/components/layout/LoadingScreen";
 import TVTicker from "@/components/tradingview/TVTicker";
 import { MobileMenuProvider } from "@/context/MobileMenuContext";
+import AIAssistant from "@/components/layout/AIAssistant";
+
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 
 export default function RootLayout({
   children,
@@ -65,7 +68,7 @@ export default function RootLayout({
               <TVTicker />
             </div>
             
-            <div className="flex h-screen overflow-hidden pt-[46px]"> {/* pt-[46px] to account for TVTicker height */}
+            <div className="flex h-screen overflow-hidden pt-[46px] pb-16 md:pb-0"> {/* pb-16 for Mobile Nav padding on mobile, 0 on desktop */}
               <Sidebar />
               
               <div className="flex-1 flex flex-col w-full md:ml-64 overflow-hidden relative">
@@ -73,8 +76,13 @@ export default function RootLayout({
                 <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
                   {children}
                 </main>
+                <AIAssistant />
               </div>
             </div>
+            
+            {/* Mobile Bottom Navigation (Native App Feel) */}
+            <MobileBottomNav />
+            
           </MobileMenuProvider>
         </MarketProvider>
       </body>
