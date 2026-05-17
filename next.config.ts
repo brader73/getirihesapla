@@ -44,8 +44,8 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            // API call'ları ve scriptler için izinler (Firebase, vs.)
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com https://query1.finance.yahoo.com;"
+            // Gevşetilmiş CSP (TradingView, Binance, AllOrigins gibi harici kaynaklara izin verir)
+            value: "default-src 'self' https:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https:;"
           }
         ]
       }
