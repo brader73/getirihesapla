@@ -16,7 +16,8 @@ export default function ProGrafikPage() {
   useEffect(() => {
     // Only load script once
     if (document.getElementById('tradingview-widget-script')) {
-      initWidget();
+      setIsLoaded(true);
+      setTimeout(initWidget, 100); // Küçük bir gecikme ile DOM'un hazır olmasını bekle
       return;
     }
 
@@ -41,7 +42,7 @@ export default function ProGrafikPage() {
     if (typeof window.TradingView !== 'undefined' && containerRef.current) {
       new window.TradingView.widget({
         autosize: true,
-        symbol: "BIST:XU100", // Varsayılan BIST 100
+        symbol: "BIST:THYAO", // Varsayılan BIST 100 verisi widget'ta sorunlu olabiliyor, en hacimli hisse THYAO seçildi
         interval: "D",
         timezone: "Europe/Istanbul",
         theme: "dark",

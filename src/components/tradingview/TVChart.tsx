@@ -16,7 +16,7 @@ function TVChart() {
     script.async = true;
     script.innerHTML = JSON.stringify({
       "autosize": true,
-      "symbol": "BIST:XU100",
+      "symbol": "BIST:THYAO",
       "interval": "D",
       "timezone": "Europe/Istanbul",
       "theme": "dark",
