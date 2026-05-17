@@ -1,13 +1,16 @@
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-  <!-- Premium Fintech KORFU Favicon -->
-  <g transform="translate(0, 2)">
-    <g stroke="#D4AF37" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <path d="M 20,44 L 32,24 L 44,44" />
-      <path d="M 26,34 L 16,26" />
-      <path d="M 38,34 L 48,26" />
-      <path d="M 23,39 L 10,32" />
-      <path d="M 41,39 L 54,32" />
-    </g>
-    <circle cx="32" cy="52" r="3" fill="#1E293B" />
+<svg width="64" height="64" viewBox="200 100 650 650" xmlns="http://www.w3.org/2000/svg">
+  <!-- KF Monogram - Favicon -->
+  <!-- F Gövdesi ve K'nın Alt Bacağı (Navy) -->
+  <g stroke="#0A192F" stroke-width="64" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+    <path d="M 300,300 L 300,700" />
+    <path d="M 300,300 L 500,300" />
+    <path d="M 300,500 L 450,500" />
+    <path d="M 400,500 L 600,700" />
+  </g>
+
+  <!-- Bullish Trend Ok'u (K'nın Üst Bacağı - Gold) -->
+  <g stroke="#D4AF37" stroke-width="64" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+    <path d="M 300,600 L 750,150" />
+    <path d="M 550,150 L 750,150 L 750,350" />
   </g>
 </svg>

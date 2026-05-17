@@ -1,15 +1,22 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Premium Fintech KORFU App Icon -->
+  <!-- KF Monogram & Bullish Arrow - App Icon -->
   <rect width="1024" height="1024" rx="220" fill="#0A192F" />
-  <g transform="translate(0, 0)">
-    <g stroke="#D4AF37" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <path d="M 300,600 L 512,250 L 724,600" />
-      <path d="M 406,425 L 250,300" />
-      <path d="M 618,425 L 774,300" />
-      <path d="M 353,512 L 150,400" />
-      <path d="M 671,512 L 874,400" />
+  <g transform="translate(0, -20)">
+    <!-- F Gövdesi ve K'nın Alt Bacağı (White) -->
+    <g stroke="#FFFFFF" stroke-width="52" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+      <path d="M 300,300 L 300,700" />
+      <path d="M 300,300 L 500,300" />
+      <path d="M 300,500 L 450,500" />
+      <path d="M 400,500 L 600,700" />
     </g>
-    <circle cx="512" cy="710" r="28" fill="#D4AF37" />
-    <text x="545" y="870" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="120" font-weight="300" letter-spacing="65" fill="#FFFFFF" text-anchor="middle">KORFU</text>
+
+    <!-- Bullish Trend Ok'u (K'nın Üst Bacağı - Gold) -->
+    <g stroke="#D4AF37" stroke-width="52" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+      <path d="M 300,600 L 750,150" />
+      <path d="M 550,150 L 750,150 L 750,350" />
+    </g>
+
+    <!-- Tipografi -->
+    <text x="512" y="900" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="90" font-weight="800" letter-spacing="12" fill="#FFFFFF" text-anchor="middle">KORFU<tspan fill="#D4AF37" font-weight="300">FINANCE</tspan></text>
   </g>
 </svg>

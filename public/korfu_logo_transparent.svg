@@ -1,18 +1,27 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Premium Fintech KORFU Logo - Transparent Background -->
-  <g transform="translate(0, -40)">
-    <g stroke="#D4AF37" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <!-- Ana zirve (Dağ / A formu) -->
-      <path d="M 300,650 L 512,300 L 724,650" />
-      <!-- Kesişen / Büyüme çizgileri -->
-      <path d="M 406,475 L 250,350" />
-      <path d="M 618,475 L 774,350" />
-      <path d="M 353,562 L 150,450" />
-      <path d="M 671,562 L 874,450" />
+  <!-- KF Monogram & Bullish Arrow - Transparent -->
+  <g transform="translate(0, -20)">
+    <!-- F Gövdesi ve K'nın Alt Bacağı (Navy) -->
+    <g stroke="#0A192F" stroke-width="52" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+      <!-- Ortak Dikey Gövde -->
+      <path d="M 300,300 L 300,700" />
+      <!-- F Üst Çizgi -->
+      <path d="M 300,300 L 500,300" />
+      <!-- F Orta Çizgi -->
+      <path d="M 300,500 L 450,500" />
+      <!-- K Alt Bacak (Kesişimden Başlar) -->
+      <path d="M 400,500 L 600,700" />
     </g>
-    <!-- Merkez Nokta -->
-    <circle cx="512" cy="760" r="28" fill="#1E293B" />
+
+    <!-- Bullish Trend Ok'u (K'nın Üst Bacağı - Gold) -->
+    <g stroke="#D4AF37" stroke-width="52" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+      <!-- Çapraz Yükseliş Çizgisi -->
+      <path d="M 300,600 L 750,150" />
+      <!-- Ok Başı (Arrowhead) -->
+      <path d="M 550,150 L 750,150 L 750,350" />
+    </g>
+
     <!-- Tipografi -->
-    <text x="545" y="920" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="120" font-weight="300" letter-spacing="65" fill="#0A192F" text-anchor="middle">KORFU</text>
+    <text x="512" y="900" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="90" font-weight="800" letter-spacing="12" fill="#0A192F" text-anchor="middle">KORFU<tspan fill="#D4AF37" font-weight="300">FINANCE</tspan></text>
   </g>
 </svg>
