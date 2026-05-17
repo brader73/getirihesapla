@@ -19,6 +19,8 @@ export const ASSETS = [
 export interface MarketData {
   price: number;
   change: number;
+  high: number;
+  low: number;
   history: number[];
   labels: string[];
 }
@@ -53,8 +55,11 @@ export const MarketProvider = ({ children }: { children: React.ReactNode }) => {
 
         const prices = result.indicators.quote[0].close.filter((p: number | null) => p !== null);
         const labels = prices.map((_: any, i: number) => i.toString());
+        
+        const high = Math.max(...prices, currentPrice);
+        const low = Math.min(...prices, currentPrice);
 
-        return { price: currentPrice, change, history: prices, labels };
+        return { price: currentPrice, change, high, low, history: prices, labels };
       } catch (error) {
         console.error("Yahoo fetch error:", error);
         return null;
@@ -75,6 +80,8 @@ export const MarketProvider = ({ children }: { children: React.ReactNode }) => {
         return {
           price: parseFloat(tickerData.lastPrice),
           change: parseFloat(tickerData.priceChangePercent),
+          high: parseFloat(tickerData.highPrice),
+          low: parseFloat(tickerData.lowPrice),
           history: prices,
           labels,
         };
@@ -87,12 +94,17 @@ export const MarketProvider = ({ children }: { children: React.ReactNode }) => {
     async function fetchAll() {
       const initialMap: Record<string, MarketData> = {};
       
-      const getMockData = (basePrice: number) => ({
-        price: basePrice,
-        change: parseFloat((Math.random() * 4 - 2).toFixed(2)),
-        history: Array.from({length: 24}, () => basePrice + (Math.random() * basePrice * 0.02 - basePrice * 0.01)),
-        labels: Array.from({length: 24}, (_, i) => i.toString())
-      });
+      const getMockData = (basePrice: number) => {
+        const history = Array.from({length: 24}, () => basePrice + (Math.random() * basePrice * 0.02 - basePrice * 0.01));
+        return {
+          price: basePrice,
+          change: parseFloat((Math.random() * 4 - 2).toFixed(2)),
+          high: Math.max(...history),
+          low: Math.min(...history),
+          history,
+          labels: Array.from({length: 24}, (_, i) => i.toString())
+        };
+      };
 
       for (const asset of ASSETS) {
         let res = null;
@@ -109,6 +121,10 @@ export const MarketProvider = ({ children }: { children: React.ReactNode }) => {
            if (asset.id === 'XU100') mockBasePrice = 10500;
            if (asset.id === 'THYAO') mockBasePrice = 310;
            if (asset.id === 'TUPRS') mockBasePrice = 190;
+           if (asset.id === 'KCHOL') mockBasePrice = 230;
+           if (asset.id === 'AKBNK') mockBasePrice = 62;
+           if (asset.id === 'ISCTR') mockBasePrice = 14;
+           if (asset.id === 'EREGL') mockBasePrice = 52;
            
            res = getMockData(mockBasePrice);
         }
