@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox, AdvisorInsight } from "./shared";
+import { Card, InputGroup, ResultBox, AIAnalysisDashboard } from "./shared";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -72,19 +72,25 @@ export default function RealReturn() {
             />
           </div>
 
-          <AdvisorInsight 
-            type={result.realReturn > 5 ? 'success' : result.realReturn > 0 ? 'info' : 'danger'}
-            message={
+          <AIAnalysisDashboard 
+            score={result.realReturn > 10 ? 98 : result.realReturn > 5 ? 85 : result.realReturn > 0 ? 65 : 30}
+            riskLevel={result.realReturn < 0 ? 'Yüksek' : data.inflation > 40 ? 'Orta' : 'Düşük'}
+            growthPotential={result.realReturn > 5 ? 'Yüksek' : result.realReturn > 0 ? 'Orta' : 'Düşük'}
+            inflationImpact={result.realReturn > 0 ? 'Dirençli (Nötr)' : 'Negatif'}
+            longTermView={
               result.realReturn > 5 
-                ? "Harika! Portföyünüz enflasyonun üzerinde, çok güçlü bir reel büyüme sergiliyor. Alım gücünüz istikrarlı bir şekilde artıyor."
+                ? "Mevcut stratejiniz enflasyon karşısında çok dirençli. Bu reel getiri oranı uzun vadede servetinizi katlayarak büyütecek güçlü bir kaldıraç sağlıyor."
                 : result.realReturn > 0
-                ? "Yatırımınız enflasyonu ucu ucuna yeniyor. Alım gücünüz korunuyor ancak reel büyüme sınırlı. Getiri potansiyeli daha yüksek alternatifler değerlendirilebilir."
-                : "Riskli Bölge: Yatırımınızın getirisi enflasyonun altında kalmış. Portföyünüz sayısal olarak artsa bile, reel alım gücünüz maalesef eriyor."
+                ? "Yatırımınız enflasyona karşı korunuyor ancak reel büyüme hızı yavaş. Uzun vadede hedeflerinize ulaşmak için risk/getiri profili daha yüksek varlıklar eklenebilir."
+                : "Negatif reel getiri, alım gücünüzün günden güne erimesine neden oluyor. Uzun vadeli finansal hedefler için enflasyon korumalı varlıklara (hisse senedi, değerli maden, gayrimenkul) geçiş değerlendirilmeli."
             }
-            riskLevel={result.realReturn > 5 ? 'Düşük' : result.realReturn > 0 ? 'Orta' : 'Yüksek'}
-            metrics={[
-              { label: 'Reel Büyüme Oranı', value: `%${result.realReturn.toFixed(2)}` },
-              { label: 'Enflasyon Etkisi', value: `%${((1 - (1/(1+(data.inflation/100)))) * 100).toFixed(2)} erime` }
+            pros={[
+              result.realReturn > 0 ? `Enflasyon oranının (%${data.inflation}) üzerinde getiri sağlanıyor.` : "Nominal olarak sermaye artışı görülüyor.",
+              result.realReturn > 5 ? "Alım gücünde agresif artış ivmesi yakalanmış durumda." : "Sermaye piyasalarında kalmak nakitte kalmaktan daha iyidir."
+            ]}
+            cons={[
+              result.realReturn <= 0 ? `Portföyünüzün alım gücü %${Math.abs(result.realReturn).toFixed(2)} eriyor.` : "Yüksek enflasyon dönemlerinde vergisel yükler reel getiriyi daha da düşürebilir.",
+              data.inflation > 40 ? "Yüksek enflasyon ortamı makroekonomik istikrarsızlık riskleri taşır." : "Sadece risksiz getirilerle uzun vadeli servet yaratımı zordur."
             ]}
           />
         </div>

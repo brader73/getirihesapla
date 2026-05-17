@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, InputGroup, ResultBox, AdvisorInsight, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 
 export default function GordonGrowth() {
   const [gordon, setGordon] = useState({ currentPrice: 100, currentDividend: 10, growthRate: 5, discountRate: 15 });
@@ -58,19 +58,25 @@ export default function GordonGrowth() {
         <div className="mt-6">
           <ResultBox show={true} title="Hissenin Bulunması Gereken İçsel Değeri" value={formatCurrency(result.value)} note={`Gelecek yıl beklenen tahmini temettü: ${formatCurrency(result.nextDividend)}`} />
           
-          <AdvisorInsight 
-            type={result.marginOfSafety > 15 ? 'success' : result.marginOfSafety > -5 ? 'warning' : 'danger'}
-            message={
-              result.marginOfSafety > 15 
-                ? "Gordon Büyüme Modeli'ne göre hisse şu anda piyasada ucuz fiyatlanıyor. Yüksek güvenlik marjı, uzun vadeli alım fırsatı sunabilir."
-                : result.marginOfSafety > -5
-                ? "Hisse senedi şu anki fiyatıyla yaklaşık olarak adil değerinde (fair value) işlem görüyor. Büyüme hızındaki ufak değişiklikler risk profilini etkileyebilir."
-                : "Hisse şu anda hesaplanan içsel değerinin üzerinde işlem görüyor (Pahalı). Piyasa beklentileri yüksek veya aşırı alım bölgesinde olabilir."
-            }
+          <AIAnalysisDashboard 
+            score={result.marginOfSafety > 20 ? 95 : result.marginOfSafety > 0 ? 75 : result.marginOfSafety > -10 ? 45 : 20}
             riskLevel={result.marginOfSafety > 15 ? 'Düşük' : result.marginOfSafety > -5 ? 'Orta' : 'Yüksek'}
-            metrics={[
-              { label: 'Güvenlik Marjı', value: `%${result.marginOfSafety.toFixed(1)}` },
-              { label: 'Güncel Fiyat', value: formatCurrency(gordon.currentPrice) }
+            growthPotential={gordon.growthRate >= 10 ? 'Yüksek' : gordon.growthRate >= 5 ? 'Orta' : 'Düşük'}
+            inflationImpact={gordon.growthRate > 5 ? 'Pozitif' : 'Negatif'}
+            longTermView={
+              result.marginOfSafety > 15 
+                ? "Gordon Büyüme Modeli'ne göre hisse şu anda piyasada ucuz fiyatlanıyor. Yüksek güvenlik marjı, uzun vadeli ve temettü odaklı yatırımcılar için büyük bir fırsat sunuyor."
+                : result.marginOfSafety > -5
+                ? "Hisse senedi şu anki fiyatıyla yaklaşık olarak adil değerinde (fair value) işlem görüyor. Büyüme hızındaki ufak değişiklikler risk profilini etkileyebilir. Piyasayı izlemeye devam edin."
+                : "Hisse şu anda hesaplanan içsel değerinin üzerinde işlem görüyor (Pahalı). Piyasa beklentileri yüksek veya aşırı alım bölgesinde olabilir. Uzun vadede düzeltme riski taşıyor."
+            }
+            pros={[
+              `Beklenen büyüme hızı (%${gordon.growthRate}) temettü verimliliğini artırıyor.`,
+              result.marginOfSafety > 0 ? `İçsel değer (${formatCurrency(result.value)}) güncel fiyattan yüksek, bu durum iskontolu bir fırsat yaratıyor.` : `Düzenli temettü ödemesi (${formatCurrency(gordon.currentDividend)}) nakit akışı sağlar.`
+            ]}
+            cons={[
+              gordon.discountRate > 15 ? `İskonto oranının yüksek olması (%${gordon.discountRate}) makroekonomik risklerin fiyatlandığını gösteriyor.` : `Büyüme tahminleri piyasa dalgalanmalarına karşı hassastır.`,
+              result.marginOfSafety <= 0 ? `Şu anki piyasa fiyatı (${formatCurrency(gordon.currentPrice)}) adil değerinin üzerinde, primli işlem görüyor.` : `Hisse senedi yatırımları genel piyasa riskine açıktır.`
             ]}
           />
         </div>

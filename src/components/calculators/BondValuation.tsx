@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, InputGroup, ResultBox, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 
 export default function BondValuation() {
   const [bond, setBond] = useState({ faceValue: 1000, couponRate: 5, marketRate: 6, years: 5 });
@@ -66,6 +66,28 @@ export default function BondValuation() {
               <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{formatCurrency(result.presentValueOfFace)}</div>
             </div>
           </div>
+
+          <AIAnalysisDashboard 
+            score={bond.couponRate > bond.marketRate ? 85 : bond.couponRate === bond.marketRate ? 50 : 35}
+            riskLevel={bond.years > 10 ? 'Yüksek' : bond.years > 3 ? 'Orta' : 'Düşük'}
+            growthPotential='Sınırlı (Sabit Getirili)'
+            inflationImpact={bond.marketRate < 15 ? 'Yüksek Risk' : 'Nötr'}
+            longTermView={
+              bond.couponRate > bond.marketRate
+                ? "Tahvil piyasa faizlerinden daha yüksek getiri sunuyor, bu nedenle 'primli' fiyatlanıyor. Piyasada güvenli bir getiri limanı arayanlar için güçlü nakit akışı sağlar."
+                : bond.couponRate < bond.marketRate
+                ? "Tahvilin faizi piyasanın altında kaldığı için 'iskontolu' fiyatlanıyor. Kısa vadeli al-sat stratejilerinden ziyade, sadece vade sonunu bekleyecek defansif yatırımcılar için uygundur."
+                : "Tahvil başa baş noktasında (Nominal = Adil Değer). Piyasa ile tam bir denge halinde."
+            }
+            pros={[
+              "Tahvil yatırımları hisse senetlerine kıyasla anapara garantisi (temerrüt olmaması şartıyla) sunar.",
+              `Düzenli periyodik kupon ödemeleri (Yıllık ${formatCurrency(bond.faceValue * (bond.couponRate / 100))}) nakit akışı yaratır.`
+            ]}
+            cons={[
+              bond.years > 5 ? "Uzun vadeli tahviller enflasyon ve faiz artışı riskine karşı oldukça hassastır (Durasyon riski)." : "Kısa vade yeniden yatırım (reinvestment) riski taşır.",
+              "Sabit getirili menkul kıymetler boğa piyasalarında hisse senetlerinin gerisinde kalır."
+            ]}
+          />
         </div>
       )}
     </Card>

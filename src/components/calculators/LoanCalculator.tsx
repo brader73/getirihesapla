@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -67,6 +67,29 @@ export default function LoanCalculator() {
           <div className="mt-6 flex justify-center h-48">
             <Pie data={result.chartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }} />
           </div>
+
+          <AIAnalysisDashboard 
+            score={loan.rate < 2 ? 80 : loan.rate < 4 ? 60 : 35}
+            riskLevel={result.totalInterest > loan.amount ? 'Yüksek' : 'Orta'}
+            growthPotential='Negatif (Borç)'
+            inflationImpact={loan.rate > 4 ? 'Negatif' : 'Nötr'}
+            longTermView={
+              result.totalInterest > loan.amount
+                ? "Kredinin toplam faiz yükü, çektiğiniz anaparayı aşmış durumda. Bu çok pahalı bir borçlanmadır. Eğer bu borç yüksek getirili bir yatırıma veya ticarete (kaldıraç) dönüşmüyorsa, uzun vadeli finansal sağlığınızı ciddi şekilde tehdit edebilir."
+                : loan.term > 60
+                ? "Uzun vadeli borçlanma aylık taksitleri düşürse de toplamda ödeyeceğiniz faiz yükünü ciddi oranda artırır. Erken kapama veya ara ödeme seçeneklerini mutlaka değerlendirin."
+                : "Borçlanma maliyetiniz nispeten yönetilebilir seviyede. Aylık taksitlerin düzenli ödenmesi kredi notunuzu pozitif etkileyecektir."
+            }
+            pros={[
+              "Nakit ihtiyacını anında karşılayarak likidite sağlar.",
+              "Enflasyonun kredinin faiz oranından yüksek olduğu durumlarda, reel olarak borcunuz eriyebilir."
+            ]}
+            cons={[
+              `Toplam geri ödeme anaparanın ${((result.total / loan.amount)).toFixed(2)} katı seviyesinde.`,
+              `Sadece faiz için bankaya ödenecek tutar ${formatCurrency(result.totalInterest)}.`,
+              "Kredi ödemeleri aylık nakit akışınızı (bütçenizi) daraltır."
+            ]}
+          />
         </div>
       )}
     </Card>

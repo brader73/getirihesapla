@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox, AdvisorInsight, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -84,17 +84,24 @@ export default function BesSimulation() {
             <Pie data={result.chartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }} />
           </div>
 
-          <AdvisorInsight 
-            type={bes.years >= 10 ? 'success' : 'warning'}
-            message={
+          <AIAnalysisDashboard 
+            score={bes.years >= 10 && bes.expectedReturn >= 40 ? 92 : bes.years >= 10 ? 80 : bes.years >= 5 ? 55 : 35}
+            riskLevel={bes.expectedReturn > 60 ? 'Yüksek' : bes.expectedReturn > 30 ? 'Orta' : 'Düşük'}
+            growthPotential={bes.expectedReturn > 60 ? 'Yüksek' : bes.expectedReturn > 30 ? 'Orta' : 'Düşük'}
+            inflationImpact={bes.expectedReturn > 40 ? 'Pozitif' : 'Nötr'}
+            longTermView={
               bes.years >= 10 
-                ? "BES planınız 10 yılı aştığı için devlet katkısının tamamına (%100) hak kazanıyorsunuz. Bileşik getirinin ve %20 devlet desteğinin gücü uzun vadede muazzam bir kaldıraç yaratıyor. Bu plan uzun vadede çok güçlü görünüyor."
-                : "Sistemde 10 yıldan kısa süre kaldığınız için devlet katkısının sadece bir kısmına (%15-%60 arası) hak kazanacaksınız. BES'in asıl gücü 10 yıl ve 56 yaş kriterleri karşılandığında ortaya çıkar."
+                ? "BES planınız 10 yılı aştığı için devlet katkısının tamamına (%100) hak kazanıyorsunuz. Bileşik getirinin ve %20 devlet desteğinin gücü uzun vadede muazzam bir kaldıraç (kartopu etkisi) yaratıyor. Emeklilik döneminiz için sağlam bir temel inşa ediyorsunuz."
+                : "Sistemde 10 yıldan kısa süre kaldığınız için devlet katkısının sadece bir kısmına (%15-%60 arası) hak kazanacaksınız. BES'in asıl gücü 10 yıl ve 56 yaş kriterleri karşılandığında ortaya çıkar. Erken çıkışlar vergi ve kesinti yükü yaratabilir."
             }
-            riskLevel={bes.expectedReturn > 60 ? 'Yüksek (Agresif Fonlar)' : bes.expectedReturn > 30 ? 'Orta (Dengeli)' : 'Düşük (Para Piyasası)'}
-            metrics={[
-              { label: 'Ödenen Anapara', value: formatCurrency(result.principal) },
-              { label: 'Bileşik Getiri Çarpanı', value: `${(result.total / result.principal).toFixed(2)}x` }
+            pros={[
+              "%20 Devlet Katkısı doğrudan anında getiri avantajı sunuyor.",
+              `Uzun vade (${bes.years} yıl) bileşik faiz sarmalını tetikliyor.`,
+              "Emeklilik dönemi için disiplinli birikim yapmanızı sağlıyor."
+            ]}
+            cons={[
+              bes.years < 10 ? "Erken çıkış yapmanız durumunda devlet katkısının büyük kısmını ve stopaj vergisi ödeyeceksiniz." : "Fon performansının piyasa dalgalanmalarına açık olması (fon dağılımı önemlidir).",
+              "Fon işletim gider kesintileri (FİG) net getiriyi bir miktar aşağı çekebilir."
             ]}
           />
         </div>

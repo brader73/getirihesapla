@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox, AdvisorInsight, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -104,19 +104,26 @@ export default function CompoundInterest() {
             />
           </div>
           
-          <AdvisorInsight 
-            type={result.total / result.totalPrincipal > 3 ? 'success' : result.total / result.totalPrincipal > 1.5 ? 'info' : 'warning'}
-            message={
-              result.total / result.totalPrincipal > 3 
-                ? "Bileşik getirinin sihrini görüyorsunuz. Uzun vade ve istikrarlı yatırım sayesinde, yatırdığınız anapara katlanarak devasa bir servet inşa ediyor."
-                : result.total / result.totalPrincipal > 1.5
+          <AIAnalysisDashboard 
+            score={(result.total / result.totalPrincipal) > 3 ? 96 : (result.total / result.totalPrincipal) > 1.5 ? 78 : 50}
+            riskLevel={compound.rate > 40 ? 'Yüksek' : compound.rate > 20 ? 'Orta' : 'Düşük'}
+            growthPotential={(result.total / result.totalPrincipal) > 2 ? 'Yüksek' : 'Orta'}
+            inflationImpact={compound.rate > 35 ? 'Pozitif' : compound.rate > 15 ? 'Nötr' : 'Negatif'}
+            longTermView={
+              (result.total / result.totalPrincipal) > 3 
+                ? "Bileşik getirinin sihrini görüyorsunuz. Uzun vade ve istikrarlı yatırım sayesinde, yatırdığınız anapara katlanarak devasa bir servet inşa ediyor. Üstel büyüme aşamasına geçilmiş."
+                : (result.total / result.totalPrincipal) > 1.5
                 ? "İstikrarlı büyüme. Faiz (getiri) sarmalı çalışmaya başlamış ancak kar topu etkisini tam olarak görebilmek için vadeyi veya aylık eklemeleri artırmayı düşünebilirsiniz."
                 : "Erken aşamadasınız. Şu anda portföyünüzün büyük kısmı kendi cebinizden koyduğunuz anaparadan oluşuyor. Bileşik getirinin patlama yapabilmesi için biraz daha zamana veya daha yüksek getiri hedefine ihtiyacınız var."
             }
-            riskLevel={compound.rate > 40 ? 'Yüksek (Borsa/Kripto Ağırlıklı)' : compound.rate > 20 ? 'Orta (Karma Portföy)' : 'Düşük (Mevduat/Tahvil)'}
-            metrics={[
-              { label: 'Büyüme Çarpanı', value: `${(result.total / result.totalPrincipal).toFixed(2)}x` },
-              { label: 'Faizin Portföydeki Payı', value: `%${((result.totalInterest / result.total) * 100).toFixed(1)}` }
+            pros={[
+              `Düzenli aylık yatırımlar (${formatCurrency(compound.monthly)}) maliyet ortalamasını iyileştirir.`,
+              `${compound.years} yıllık periyot bileşik getirinin çalışması için gereken zamanı sağlar.`,
+              "Sistematik büyüme, piyasa zamanlaması yapmadan servet yaratır."
+            ]}
+            cons={[
+              compound.rate > 40 ? `Aşırı yüksek getiri beklentisi (%${compound.rate}) yüksek volatilite (dalgalanma) riski taşır.` : "Yüksek enflasyon ortamında nominal getiri tek başına yeterli olmayabilir.",
+              "Acil nakit ihtiyacında portföyü erken bozmak bileşik getiriyi sekteye uğratır."
             ]}
           />
         </div>
