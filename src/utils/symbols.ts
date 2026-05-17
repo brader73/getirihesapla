@@ -6,7 +6,7 @@ export interface MarketSymbol {
 }
 
 export const SYMBOL_DATABASE: MarketSymbol[] = [
-  // BIST 100 (Türkiye)
+  // BIST Hisseler (Türkiye)
   { symbol: "BIST:THYAO", name: "Türk Hava Yolları", type: "bist", exchange: "BIST" },
   { symbol: "BIST:TUPRS", name: "Tüpraş", type: "bist", exchange: "BIST" },
   { symbol: "BIST:KCHOL", name: "Koç Holding", type: "bist", exchange: "BIST" },
@@ -53,10 +53,14 @@ export const SYMBOL_DATABASE: MarketSymbol[] = [
   { symbol: "OANDA:XAGUSD", name: "Gümüş (Ons)", type: "commodity", exchange: "OANDA" },
   { symbol: "TVC:USOIL", name: "Ham Petrol (WTI)", type: "commodity", exchange: "TVC" },
   { symbol: "TVC:UKOIL", name: "Brent Petrol", type: "commodity", exchange: "TVC" },
+  { symbol: "TVC:PLATINUM", name: "Platin", type: "commodity", exchange: "TVC" },
+  { symbol: "TVC:COPPER", name: "Bakır", type: "commodity", exchange: "TVC" },
 
-  // Indices
-  { symbol: "BIST:XU100", name: "BIST 100 Endeksi", type: "index", exchange: "BIST" },
+  // Indices & Funds
   { symbol: "FOREXCOM:SPXUSD", name: "S&P 500", type: "index", exchange: "FOREXCOM" },
   { symbol: "FOREXCOM:NSXUSD", name: "NASDAQ 100", type: "index", exchange: "FOREXCOM" },
-  { symbol: "FOREXCOM:DJI", name: "Dow Jones", type: "index", exchange: "FOREXCOM" }
+  { symbol: "FOREXCOM:DJI", name: "Dow Jones", type: "index", exchange: "FOREXCOM" },
+  { symbol: "AMEX:SPY", name: "SPDR S&P 500 ETF (Fon)", type: "index", exchange: "AMEX" },
+  { symbol: "NASDAQ:QQQ", name: "Invesco QQQ Trust (Fon)", type: "index", exchange: "NASDAQ" },
+  { symbol: "AMEX:GLD", name: "SPDR Gold Shares (Altın Fonu)", type: "index", exchange: "AMEX" }
 ];
