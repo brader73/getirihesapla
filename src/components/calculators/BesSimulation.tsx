@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AdvisorInsight, formatCurrency } from "./shared";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -83,6 +83,20 @@ export default function BesSimulation() {
           <div className="mt-6 flex justify-center h-48">
             <Pie data={result.chartData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }} />
           </div>
+
+          <AdvisorInsight 
+            type={bes.years >= 10 ? 'success' : 'warning'}
+            message={
+              bes.years >= 10 
+                ? "BES planınız 10 yılı aştığı için devlet katkısının tamamına (%100) hak kazanıyorsunuz. Bileşik getirinin ve %20 devlet desteğinin gücü uzun vadede muazzam bir kaldıraç yaratıyor. Bu plan uzun vadede çok güçlü görünüyor."
+                : "Sistemde 10 yıldan kısa süre kaldığınız için devlet katkısının sadece bir kısmına (%15-%60 arası) hak kazanacaksınız. BES'in asıl gücü 10 yıl ve 56 yaş kriterleri karşılandığında ortaya çıkar."
+            }
+            riskLevel={bes.expectedReturn > 60 ? 'Yüksek (Agresif Fonlar)' : bes.expectedReturn > 30 ? 'Orta (Dengeli)' : 'Düşük (Para Piyasası)'}
+            metrics={[
+              { label: 'Ödenen Anapara', value: formatCurrency(result.principal) },
+              { label: 'Bileşik Getiri Çarpanı', value: `${(result.total / result.principal).toFixed(2)}x` }
+            ]}
+          />
         </div>
       )}
     </Card>

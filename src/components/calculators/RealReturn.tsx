@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox } from "./shared";
+import { Card, InputGroup, ResultBox, AdvisorInsight } from "./shared";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -71,6 +71,22 @@ export default function RealReturn() {
               }} 
             />
           </div>
+
+          <AdvisorInsight 
+            type={result.realReturn > 5 ? 'success' : result.realReturn > 0 ? 'info' : 'danger'}
+            message={
+              result.realReturn > 5 
+                ? "Harika! Portföyünüz enflasyonun üzerinde, çok güçlü bir reel büyüme sergiliyor. Alım gücünüz istikrarlı bir şekilde artıyor."
+                : result.realReturn > 0
+                ? "Yatırımınız enflasyonu ucu ucuna yeniyor. Alım gücünüz korunuyor ancak reel büyüme sınırlı. Getiri potansiyeli daha yüksek alternatifler değerlendirilebilir."
+                : "Riskli Bölge: Yatırımınızın getirisi enflasyonun altında kalmış. Portföyünüz sayısal olarak artsa bile, reel alım gücünüz maalesef eriyor."
+            }
+            riskLevel={result.realReturn > 5 ? 'Düşük' : result.realReturn > 0 ? 'Orta' : 'Yüksek'}
+            metrics={[
+              { label: 'Reel Büyüme Oranı', value: `%${result.realReturn.toFixed(2)}` },
+              { label: 'Enflasyon Etkisi', value: `%${((1 - (1/(1+(data.inflation/100)))) * 100).toFixed(2)} erime` }
+            ]}
+          />
         </div>
       )}
     </Card>

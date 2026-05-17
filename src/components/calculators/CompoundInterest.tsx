@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, InputGroup, ResultBox, formatCurrency } from "./shared";
+import { Card, InputGroup, ResultBox, AdvisorInsight, formatCurrency } from "./shared";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -103,6 +103,22 @@ export default function CompoundInterest() {
               }} 
             />
           </div>
+          
+          <AdvisorInsight 
+            type={result.total / result.totalPrincipal > 3 ? 'success' : result.total / result.totalPrincipal > 1.5 ? 'info' : 'warning'}
+            message={
+              result.total / result.totalPrincipal > 3 
+                ? "Bileşik getirinin sihrini görüyorsunuz. Uzun vade ve istikrarlı yatırım sayesinde, yatırdığınız anapara katlanarak devasa bir servet inşa ediyor."
+                : result.total / result.totalPrincipal > 1.5
+                ? "İstikrarlı büyüme. Faiz (getiri) sarmalı çalışmaya başlamış ancak kar topu etkisini tam olarak görebilmek için vadeyi veya aylık eklemeleri artırmayı düşünebilirsiniz."
+                : "Erken aşamadasınız. Şu anda portföyünüzün büyük kısmı kendi cebinizden koyduğunuz anaparadan oluşuyor. Bileşik getirinin patlama yapabilmesi için biraz daha zamana veya daha yüksek getiri hedefine ihtiyacınız var."
+            }
+            riskLevel={compound.rate > 40 ? 'Yüksek (Borsa/Kripto Ağırlıklı)' : compound.rate > 20 ? 'Orta (Karma Portföy)' : 'Düşük (Mevduat/Tahvil)'}
+            metrics={[
+              { label: 'Büyüme Çarpanı', value: `${(result.total / result.totalPrincipal).toFixed(2)}x` },
+              { label: 'Faizin Portföydeki Payı', value: `%${((result.totalInterest / result.total) * 100).toFixed(1)}` }
+            ]}
+          />
         </div>
       )}
     </Card>
