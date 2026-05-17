@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Premium Fintech KORFU Favicon -->
+  <g transform="translate(0, 2)">
+    <g stroke="#D4AF37" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M 20,44 L 32,24 L 44,44" />
+      <path d="M 26,34 L 16,26" />
+      <path d="M 38,34 L 48,26" />
+      <path d="M 23,39 L 10,32" />
+      <path d="M 41,39 L 54,32" />
+    </g>
+    <circle cx="32" cy="52" r="3" fill="#1E293B" />
+  </g>
+</svg>

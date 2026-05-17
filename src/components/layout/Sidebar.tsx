@@ -28,11 +28,14 @@ export default function Sidebar() {
       )}
       
       <aside className={`w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-[46px] md:top-0 overflow-y-auto border-r border-slate-800 z-50 transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
-      <div className="p-6 border-b border-slate-800">
-        <h1 className="text-2xl font-serif font-bold text-white tracking-wide">
-          Korfu<span className="text-amber-500">Finance</span>
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">Profesyonel Analiz</p>
+      <div className="p-6 border-b border-slate-800 flex items-center gap-3">
+        <img src="/korfu_logo_transparent.svg" alt="KorfuFinance Logo" className="w-12 h-12 object-contain" />
+        <div>
+          <h1 className="text-xl font-serif font-bold text-white tracking-wide leading-tight">
+            KorfuFinance
+          </h1>
+          <p className="text-[10px] text-amber-500 font-semibold tracking-widest uppercase mt-1">Profesyonel Analiz</p>
+        </div>
       </div>
 
       <nav className="flex-1 py-6">

@@ -129,9 +129,12 @@ export default function Header() {
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 md:hidden">
-          Korfu Finance
-        </h2>
+        <div className="flex items-center gap-2 md:hidden">
+          <img src="/korfu_favicon.svg" alt="Logo" className="w-8 h-8 object-contain" />
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+            KorfuFinance
+          </h2>
+        </div>
       </div>
 
       <div className="flex items-center gap-3 md:gap-4">

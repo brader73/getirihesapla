@@ -1,0 +1,15 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Premium Fintech KORFU App Icon -->
+  <rect width="1024" height="1024" rx="220" fill="#0A192F" />
+  <g transform="translate(0, 0)">
+    <g stroke="#D4AF37" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M 300,600 L 512,250 L 724,600" />
+      <path d="M 406,425 L 250,300" />
+      <path d="M 618,425 L 774,300" />
+      <path d="M 353,512 L 150,400" />
+      <path d="M 671,512 L 874,400" />
+    </g>
+    <circle cx="512" cy="710" r="28" fill="#D4AF37" />
+    <text x="545" y="870" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="120" font-weight="300" letter-spacing="65" fill="#FFFFFF" text-anchor="middle">KORFU</text>
+  </g>
+</svg>

@@ -7,21 +7,25 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const crimsonPro = Crimson_Pro({ subsets: ["latin"], variable: "--font-crimson-pro" });
 
 export const metadata: Metadata = {
-  title: "Korfu Finance | Profesyonel Finansal Analiz",
-  description: "Profesyonel yatırım ve finans hesaplama terminali, borsa, kripto, tahvil ve reel getiri analizleri.",
-  keywords: ["finans", "borsa", "kripto", "temettü", "hisse", "yatırım", "analiz"],
+  title: "KorfuFinance | Profesyonel Analiz",
+  description: "Profesyonel yatırım ve finans hesaplama terminali.",
+  keywords: ["finans", "borsa", "kripto", "yatırım", "analiz", "korfufinance"],
   manifest: "/manifest.json",
+  icons: {
+    icon: '/korfu_favicon.svg',
+    apple: '/korfu_app_icon.svg',
+  },
   openGraph: {
-    title: "Korfu Finance | Profesyonel Finansal Analiz",
+    title: "KorfuFinance | Profesyonel Analiz",
     description: "Profesyonel yatırım ve finans hesaplama terminali.",
     url: "https://www.korfufinance.com",
-    siteName: "Korfu Finance",
+    siteName: "KorfuFinance",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
-        width: 1200,
-        height: 630,
-        alt: "Korfu Finance",
+        url: "/korfu_app_icon.svg",
+        width: 1024,
+        height: 1024,
+        alt: "KorfuFinance",
       },
     ],
     locale: "tr_TR",
@@ -29,18 +33,19 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Korfu Finance",
+    title: "KorfuFinance",
     description: "Profesyonel yatırım ve finans hesaplama terminali.",
-    images: ["https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80"],
+    images: ["/korfu_app_icon.svg"],
   },
 };
 
 export const viewport = {
-  themeColor: "#b45309",
+  themeColor: "#0f172a",
 };
 
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
+import LoadingScreen from "@/components/layout/LoadingScreen";
 import TVTicker from "@/components/tradingview/TVTicker";
 import { MobileMenuProvider } from "@/context/MobileMenuContext";
 
@@ -52,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="tr" suppressHydrationWarning>
       <body className={`${inter.variable} ${crimsonPro.variable} font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-300`}>
+        <LoadingScreen />
         <MarketProvider>
           <MobileMenuProvider>
             {/* Ticker at the absolute top */}

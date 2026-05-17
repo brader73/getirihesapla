@@ -1,0 +1,18 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Premium Fintech KORFU Logo - Transparent Background -->
+  <g transform="translate(0, -40)">
+    <g stroke="#D4AF37" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <!-- Ana zirve (Dağ / A formu) -->
+      <path d="M 300,650 L 512,300 L 724,650" />
+      <!-- Kesişen / Büyüme çizgileri -->
+      <path d="M 406,475 L 250,350" />
+      <path d="M 618,475 L 774,350" />
+      <path d="M 353,562 L 150,450" />
+      <path d="M 671,562 L 874,450" />
+    </g>
+    <!-- Merkez Nokta -->
+    <circle cx="512" cy="760" r="28" fill="#1E293B" />
+    <!-- Tipografi -->
+    <text x="545" y="920" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="120" font-weight="300" letter-spacing="65" fill="#0A192F" text-anchor="middle">KORFU</text>
+  </g>
+</svg>
