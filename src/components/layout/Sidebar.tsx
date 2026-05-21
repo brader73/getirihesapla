@@ -32,14 +32,23 @@ export default function Sidebar() {
       )}
       
       <aside className={`w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-[46px] md:top-0 overflow-y-auto border-r border-slate-800 z-50 transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
-      <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-        <img src="/korfu_logo_transparent.svg" alt="KorfuFinance Logo" className="w-12 h-12 object-contain" />
-        <div>
-          <h1 className="text-xl font-serif font-bold text-white tracking-wide leading-tight">
-            KorfuFinance
-          </h1>
-          <p className="text-[10px] text-amber-500 font-semibold tracking-widest uppercase mt-1">Profesyonel Analiz</p>
+      <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src="/korfu_logo_transparent.svg" alt="KorfuFinance Logo" className="w-12 h-12 object-contain" />
+          <div>
+            <h1 className="text-xl font-serif font-bold text-white tracking-wide leading-tight">
+              KorfuFinance
+            </h1>
+            <p className="text-[10px] text-amber-500 font-semibold tracking-widest uppercase mt-1">Profesyonel Analiz</p>
+          </div>
         </div>
+        <button 
+          onClick={() => setIsOpen(false)} 
+          className="md:hidden p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+          aria-label="Menüyü Kapat"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
 
       <nav className="flex-1 py-6">
