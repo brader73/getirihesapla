@@ -2,13 +2,11 @@
 
 import React, { useState } from "react";
 import { useMarketData, ASSETS } from "@/context/MarketContext";
-import { useRouter } from "next/navigation";
 
 export default function MarketQuotesTable() {
   const { dataMap } = useMarketData();
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
 
   const TABS = [
     { id: "all", label: "Tümü" },
@@ -28,11 +26,6 @@ export default function MarketQuotesTable() {
     
     return true;
   });
-
-  const handleRowClick = (symbol: string) => {
-    // Pro grafik sayfasına yönlendir veya farklı bir işlem yap
-    router.push('/pro-grafik');
-  };
 
   return (
     <div className="w-full bg-[#0a0e17] rounded-2xl border border-slate-800 shadow-2xl overflow-hidden font-sans relative">
@@ -95,8 +88,7 @@ export default function MarketQuotesTable() {
                 return (
                   <tr 
                     key={asset.id} 
-                    onClick={() => handleRowClick(asset.symbol)}
-                    className="border-b border-slate-800/50 hover:bg-[#151b2b] cursor-pointer transition-colors group"
+                    className="border-b border-slate-800/50 hover:bg-[#151b2b] transition-colors group"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
