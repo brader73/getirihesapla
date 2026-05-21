@@ -588,12 +588,11 @@ export default function PortfolioPage() {
                       <th className="px-5 py-4 font-semibold uppercase tracking-wider text-xs text-right">Toplam Değer</th>
                       <th className="px-5 py-4 font-semibold uppercase tracking-wider text-xs text-right">Kâr/Zarar</th>
                       <th className="px-5 py-4 font-semibold uppercase tracking-wider text-xs text-center">Trend</th>
-                      <th className="px-5 py-4 font-semibold text-center"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/50">
                     {portfolio.length === 0 ? (
-                      <tr><td colSpan={9} className="px-5 py-10 text-center text-slate-500">Açık pozisyon bulunmuyor.</td></tr>
+                      <tr><td colSpan={8} className="px-5 py-10 text-center text-slate-500">Açık pozisyon bulunmuyor.</td></tr>
                     ) : (
                       portfolio.map(asset => {
                         const data = getPriceData(asset);
@@ -607,6 +606,13 @@ export default function PortfolioPage() {
                           <tr key={asset.id} className="hover:bg-slate-800/30 transition-colors group">
                             <td className="px-5 py-4">
                               <div className="flex items-center gap-3">
+                                <button 
+                                  onClick={() => handleDeleteAsset(asset.id, "portfolio")}
+                                  className="text-slate-500 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-500/10"
+                                  title="Varlığı Sil"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
                                 <div className={`w-2 h-2 rounded-full ${isProfit ? 'bg-emerald-500' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`}></div>
                                 <div>
                                   <div className="font-bold text-white tracking-wide">{asset.symbol}</div>
@@ -644,15 +650,6 @@ export default function PortfolioPage() {
                             </td>
                             <td className="px-5 py-4 flex justify-center">
                               <Sparkline isPositive={isDailyPos} />
-                            </td>
-                            <td className="px-5 py-4 text-center">
-                              <button 
-                                onClick={() => handleDeleteAsset(asset.id, "portfolio")}
-                                className="text-slate-500 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-500/10"
-                                title="Varlığı Sil"
-                              >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                              </button>
                             </td>
                           </tr>
                         );
