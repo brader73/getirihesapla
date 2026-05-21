@@ -7,6 +7,7 @@ import GordonGrowth from "./GordonGrowth";
 import RealReturn from "./RealReturn";
 import BesSimulation from "./BesSimulation";
 import BondValuation from "./BondValuation";
+import MacroStressTest from "./MacroStressTest";
 
 export default function CalculatorGrid() {
   return (
@@ -17,6 +18,7 @@ export default function CalculatorGrid() {
       <RealReturn />
       <BesSimulation />
       <BondValuation />
+      <MacroStressTest />
     </div>
   );
 }
