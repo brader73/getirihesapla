@@ -1,6 +1,7 @@
 import RealMarketOverview from "@/components/tradingview/RealMarketOverview";
 import TVScreener from "@/components/tradingview/TVScreener";
 import CalculatorGrid from "@/components/calculators/CalculatorGrid";
+import FooterWithModals from "@/components/layout/FooterWithModals";
 
 export default function Home() {
   return (
@@ -36,9 +37,7 @@ export default function Home() {
         </section>
       </div>
 
-      <footer className="text-center py-6 text-sm text-slate-500 border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50">
-        <p>Bu platform eğitim amaçlıdır. Yatırım tavsiyesi değildir.<br/>Veriler kullanıcı girişlerine dayalı yaklaşık hesaplamalar üretir.</p>
-      </footer>
+      <FooterWithModals />
     </>
   );
 }
