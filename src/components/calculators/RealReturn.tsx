@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Card, InputGroup, ResultBox, AIAnalysisDashboard } from "./shared";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { useSaveCalculation } from "@/lib/useSaveCalculation";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function RealReturn() {
   const [data, setData] = useState({ nominal: 45, inflation: 60 });
   const [result, setResult] = useState<{ realReturn: number; chartData: any } | null>(null);
+  const { saveCalculation, isSaving, user } = useSaveCalculation();
 
   const calculate = () => {
     const n = data.nominal / 100;
@@ -39,6 +41,12 @@ export default function RealReturn() {
     });
   };
 
+  const handleSave = () => {
+    if (result) {
+      saveCalculation("Reel Getiri", `Reel Getiri: %${result.realReturn.toFixed(2)}`);
+    }
+  };
+
   return (
     <Card title="Reel Getiri Hesaplama (Fisher Denklemi)">
       <InputGroup label="Nominal Getiri Oranınız (%)" value={data.nominal} onChange={(e: any) => setData({ ...data, nominal: +e.target.value })} />
@@ -48,7 +56,7 @@ export default function RealReturn() {
         * Gerçek alım gücünüzdeki değişimi bulmak için uluslararası standart olan <strong>Fisher Denklemi</strong> <code>((1+N)/(1+E))-1</code> kullanılmaktadır. Basit çıkarma işlemi (N-E) yanıltıcıdır.
       </div>
 
-      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">Reel Getiriyi Hesapla</button>
+      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition-all duration-300">Reel Getiriyi Hesapla</button>
       
       {result && (
         <div className="mt-6">
@@ -57,6 +65,8 @@ export default function RealReturn() {
             title="Enflasyondan Arındırılmış Gerçek Getiriniz" 
             value={`%${result.realReturn.toFixed(2)}`} 
             note={result.realReturn < 0 ? "Dikkat: Alım gücünüz düşmüş (Zarardasınız)." : "Tebrikler: Enflasyonu yendiniz!"} 
+            onSave={user ? handleSave : undefined}
+            isSaving={isSaving}
           />
           <div className="mt-6 h-48">
             <Bar 

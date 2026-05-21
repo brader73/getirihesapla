@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
+import { useSaveCalculation } from "@/lib/useSaveCalculation";
 
 export default function BondValuation() {
   const [bond, setBond] = useState({ faceValue: 1000, couponRate: 5, marketRate: 6, years: 5 });
   const [result, setResult] = useState<{ value: number; totalCoupons: number; presentValueOfCoupons: number; presentValueOfFace: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { saveCalculation, isSaving, user } = useSaveCalculation();
 
   const calculate = () => {
     setError(null);
@@ -37,6 +39,12 @@ export default function BondValuation() {
     });
   };
 
+  const handleSave = () => {
+    if (result) {
+      saveCalculation("Tahvil Değerleme", `Adil Değer: ${formatCurrency(result.value)}`);
+    }
+  };
+
   return (
     <Card title="Tahvil / Bono Değerleme">
       {error && <div className="mb-4 text-sm text-red-500 font-semibold bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">{error}</div>}
@@ -50,11 +58,18 @@ export default function BondValuation() {
         Tahvilin adil değeri, gelecekteki tüm kupon ödemelerinin ve vade sonu ana para ödemesinin bugünkü piyasa faiziyle (iskonto) bugüne çekilmiş halidir.
       </div>
 
-      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">Tahvil Değerini Hesapla</button>
+      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition-all duration-300">Tahvil Değerini Hesapla</button>
       
       {result && (
         <div className="mt-6">
-          <ResultBox show={true} title="Tahvilin Adil (İçsel) Değeri" value={formatCurrency(result.value)} note={result.value < bond.faceValue ? "Tahvil iskontolu (başlangıç değerinin altında) fiyatlanıyor." : "Tahvil primli (başlangıç değerinin üstünde) fiyatlanıyor."} />
+          <ResultBox 
+            show={true} 
+            title="Tahvilin Adil (İçsel) Değeri" 
+            value={formatCurrency(result.value)} 
+            note={result.value < bond.faceValue ? "Tahvil iskontolu (başlangıç değerinin altında) fiyatlanıyor." : "Tahvil primli (başlangıç değerinin üstünde) fiyatlanıyor."} 
+            onSave={user ? handleSave : undefined}
+            isSaving={isSaving}
+          />
           
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">

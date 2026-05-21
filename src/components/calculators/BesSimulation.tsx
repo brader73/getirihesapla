@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useSaveCalculation } from "@/lib/useSaveCalculation";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -11,6 +12,7 @@ export default function BesSimulation() {
   const [bes, setBes] = useState({ contribution: 2000, expectedReturn: 40, years: 10 });
   const [result, setResult] = useState<{ total: number; stateTotal: number; principal: number; chartData: any } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { saveCalculation, isSaving, user } = useSaveCalculation();
 
   const calculate = () => {
     setError(null);
@@ -53,6 +55,12 @@ export default function BesSimulation() {
     });
   };
 
+  const handleSave = () => {
+    if (result) {
+      saveCalculation("BES Simülasyonu", `Tahmini Fon: ${formatCurrency(result.total)}`);
+    }
+  };
+
   return (
     <Card title="Bireysel Emeklilik (BES) Simülasyonu">
       {error && <div className="mb-4 text-sm text-red-500 font-semibold bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">{error}</div>}
@@ -65,11 +73,18 @@ export default function BesSimulation() {
         * Hesaplamada <strong>%20 Devlet Katkısı</strong> avantajı varsayılan olarak fona dahil edilerek aynı oranda nemalandırılmıştır. Yıllık devlet katkısı limitleri hesaba katılmamıştır (Basit Simülasyon).
       </div>
 
-      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">BES Getirisini Hesapla</button>
+      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition-all duration-300">BES Getirisini Hesapla</button>
       
       {result && (
         <div className="mt-6">
-          <ResultBox show={true} title="Tahmini Toplam BES Fon Değeri" value={formatCurrency(result.total)} note={`${bes.years} yıl sonunda oluşacak tahmini birikiminiz.`} />
+          <ResultBox 
+            show={true} 
+            title="Tahmini Toplam BES Fon Değeri" 
+            value={formatCurrency(result.total)} 
+            note={`${bes.years} yıl sonunda oluşacak tahmini birikiminiz.`} 
+            onSave={user ? handleSave : undefined}
+            isSaving={isSaving}
+          />
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
               <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Ödediğiniz Toplam Katkı Payı</div>

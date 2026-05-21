@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
+import { useSaveCalculation } from "@/lib/useSaveCalculation";
 
 export default function GordonGrowth() {
   const [gordon, setGordon] = useState({ currentPrice: 100, currentDividend: 10, growthRate: 5, discountRate: 15 });
   const [result, setResult] = useState<{ value: number; nextDividend: number; marginOfSafety: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { saveCalculation, isSaving, user } = useSaveCalculation();
 
   const calculate = () => {
     setError(null);
@@ -36,6 +38,12 @@ export default function GordonGrowth() {
     setResult({ value, nextDividend, marginOfSafety });
   };
 
+  const handleSave = () => {
+    if (result) {
+      saveCalculation("Gordon Modeli", `İçsel Değer: ${formatCurrency(result.value)}`);
+    }
+  };
+
   return (
     <Card title="Gordon Büyüme Modeli (Hisse Değerleme)">
       {error && <div className="mb-4 text-sm text-red-500 font-semibold bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">{error}</div>}
@@ -52,11 +60,18 @@ export default function GordonGrowth() {
         r: İskonto Oranı, g: Büyüme Hızı
       </div>
 
-      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">Hisse Değerini Hesapla</button>
+      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition-all duration-300">Hisse Değerini Hesapla</button>
       
       {result && (
         <div className="mt-6">
-          <ResultBox show={true} title="Hissenin Bulunması Gereken İçsel Değeri" value={formatCurrency(result.value)} note={`Gelecek yıl beklenen tahmini temettü: ${formatCurrency(result.nextDividend)}`} />
+          <ResultBox 
+            show={true} 
+            title="Hissenin Bulunması Gereken İçsel Değeri" 
+            value={formatCurrency(result.value)} 
+            note={`Gelecek yıl beklenen tahmini temettü: ${formatCurrency(result.nextDividend)}`} 
+            onSave={user ? handleSave : undefined}
+            isSaving={isSaving}
+          />
           
           <AIAnalysisDashboard 
             score={result.marginOfSafety > 20 ? 95 : result.marginOfSafety > 0 ? 75 : result.marginOfSafety > -10 ? 45 : 20}

@@ -397,7 +397,8 @@ export default function PortfolioPage() {
   };
 
   const formatCurrency = (val: number, currency = "TRY") => {
-    return new Intl.NumberFormat('tr-TR', { style: 'currency', currency, maximumFractionDigits: 2 }).format(val);
+    const safeCurrency = (currency && currency.length === 3) ? currency : "TRY";
+    return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: safeCurrency, maximumFractionDigits: 2 }).format(val);
   };
 
   // Sparkline mockup (SVG line)

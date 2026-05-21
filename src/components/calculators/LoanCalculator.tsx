@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Card, InputGroup, ResultBox, AIAnalysisDashboard, formatCurrency } from "./shared";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useSaveCalculation } from "@/lib/useSaveCalculation";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -11,6 +12,7 @@ export default function LoanCalculator() {
   const [loan, setLoan] = useState({ amount: 250000, rate: 3.5, term: 36 });
   const [result, setResult] = useState<{ payment: number; total: number; totalInterest: number; chartData: any } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { saveCalculation, isSaving, user } = useSaveCalculation();
 
   const calculate = () => {
     setError(null);
@@ -34,13 +36,19 @@ export default function LoanCalculator() {
         datasets: [
           {
             data: [loan.amount, totalInterest],
-            backgroundColor: ["#3b82f6", "#b45309"],
-            borderColor: ["#2563eb", "#92400e"],
+            backgroundColor: ["#0f172a", "#d97706"], // Lacivert ve Altın
+            borderColor: ["#1e293b", "#b45309"],
             borderWidth: 1,
           },
         ],
       },
     });
+  };
+
+  const handleSave = () => {
+    if (result) {
+      saveCalculation("Kredi / Anüite", `Aylık Taksit: ${formatCurrency(result.payment)}`);
+    }
   };
 
   return (
@@ -49,11 +57,18 @@ export default function LoanCalculator() {
       <InputGroup label="Kredi Tutarı (Ana Para)" value={loan.amount} onChange={(e: any) => setLoan({ ...loan, amount: +e.target.value })} />
       <InputGroup label="Aylık Faiz Oranı (%)" value={loan.rate} onChange={(e: any) => setLoan({ ...loan, rate: +e.target.value })} />
       <InputGroup label="Vade (Ay)" value={loan.term} onChange={(e: any) => setLoan({ ...loan, term: +e.target.value })} />
-      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition">Ödeme Planını Hesapla</button>
+      <button onClick={calculate} className="w-full py-3 bg-slate-900 dark:bg-amber-600 text-white rounded-xl font-bold hover:opacity-90 transition-all duration-300">Ödeme Planını Hesapla</button>
       
       {result && (
         <div className="mt-6">
-          <ResultBox show={true} title="Aylık Taksit Tutarınız" value={formatCurrency(result.payment)} note={`Vade boyunca ödenecek toplam tutar: ${formatCurrency(result.total)}`} />
+          <ResultBox 
+            show={true} 
+            title="Aylık Taksit Tutarınız" 
+            value={formatCurrency(result.payment)} 
+            note={`Vade boyunca ödenecek toplam tutar: ${formatCurrency(result.total)}`} 
+            onSave={user ? handleSave : undefined}
+            isSaving={isSaving}
+          />
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
               <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Toplam Ana Para</div>

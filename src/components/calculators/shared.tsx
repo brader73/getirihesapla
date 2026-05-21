@@ -18,18 +18,31 @@ export const InputGroup = ({ label, value, onChange, type = "number" }: any) => 
       type={type}
       value={value}
       onChange={onChange}
-      className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-slate-900 dark:text-white focus:outline-none focus:border-amber-600 dark:focus:border-amber-600 transition-colors"
+      className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-slate-900 dark:text-white focus:outline-none focus:border-amber-600 dark:focus:border-amber-600 transition-all duration-300"
     />
   </div>
 );
 
-export const ResultBox = ({ title, value, note, show }: any) => {
+export const ResultBox = ({ title, value, note, show, onSave, isSaving }: any) => {
   if (!show) return null;
   return (
-    <div className="mt-5 p-4 border-l-4 border-amber-600 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
-      <div className="text-sm text-slate-600 dark:text-slate-400">{title}</div>
-      <div className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">{value}</div>
-      {note && <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 opacity-80">{note}</div>}
+    <div className="mt-5 p-4 border-l-4 border-amber-600 bg-slate-50 dark:bg-slate-800/50 rounded-xl transition-all duration-500 ease-in-out opacity-100 translate-y-0 transform origin-top animate-fade-in-down">
+      <div className="flex justify-between items-start">
+        <div>
+          <div className="text-sm text-slate-600 dark:text-slate-400">{title}</div>
+          <div className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">{value}</div>
+          {note && <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 opacity-80">{note}</div>}
+        </div>
+        {onSave && (
+          <button 
+            onClick={onSave}
+            disabled={isSaving}
+            className="text-xs bg-slate-900 dark:bg-amber-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:opacity-90 transition-all duration-300 whitespace-nowrap ml-4 disabled:opacity-50"
+          >
+            {isSaving ? "Kaydediliyor..." : "Portföyü Kaydet"}
+          </button>
+        )}
+      </div>
     </div>
   );
 };
