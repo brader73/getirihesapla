@@ -63,7 +63,7 @@ export default function MacroPanel() {
 
       // Fetch Live data
       const queryStr = LIVE_SYMBOLS.map(s => s.symbol).join(",");
-      const res = await fetch(`/api/finance/quote?symbols=${encodeURIComponent(queryStr)}`);
+      const res = await fetch(`/api/finance/quote?symbols=${encodeURIComponent(queryStr)}&t=${Date.now()}`);
       
       if (!res.ok) throw new Error("Canlı veri sunucusuna ulaşılamadı.");
       const liveData = await res.json();
