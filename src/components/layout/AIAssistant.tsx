@@ -71,11 +71,11 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
       {/* Chat Window */}
       <div 
-        className={`transition-all duration-300 transform origin-bottom-right mb-4 overflow-hidden
-        ${isOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-0 opacity-0 pointer-events-none'}`}
+        className={`transition-all duration-300 transform origin-bottom-right mb-4 overflow-hidden pointer-events-auto
+        ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
         style={{ width: '360px', height: '500px', maxWidth: 'calc(100vw - 48px)', maxHeight: 'calc(100vh - 120px)' }}
       >
         <div className="w-full h-full bg-slate-900/95 backdrop-blur-3xl border border-slate-700/50 shadow-2xl shadow-indigo-500/10 rounded-3xl flex flex-col overflow-hidden relative">
@@ -161,7 +161,7 @@ export default function AIAssistant() {
       {/* Floating Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-gradient-to-tr from-indigo-600 to-indigo-400 rounded-full shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 relative group"
+        className="w-14 h-14 bg-gradient-to-tr from-indigo-600 to-indigo-400 rounded-full shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 relative group pointer-events-auto"
       >
         <span className="text-2xl">🤖</span>
         {/* Glow effect */}
@@ -170,3 +170,4 @@ export default function AIAssistant() {
     </div>
   );
 }
+
