@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMarketData, ASSETS } from '@/context/MarketContext';
 import {
   Chart as ChartJS,
