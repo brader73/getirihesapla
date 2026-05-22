@@ -255,7 +255,28 @@ export default function InvestorTest() {
   const [scores, setScores] = useState<Record<string, number>>({});
   const [resultProfile, setResultProfile] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [shareFile, setShareFile] = useState<File | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (stage === "result" && cardRef.current && resultProfile) {
+      // Delay slightly to ensure fonts and DOM are fully rendered
+      setTimeout(() => {
+        html2canvas(cardRef.current!, {
+          useCORS: true,
+          allowTaint: false,
+          scale: 2,
+          backgroundColor: null
+        }).then(canvas => {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              setShareFile(new File([blob], 'korfu-analiz.png', { type: 'image/png' }));
+            }
+          }, 'image/png');
+        }).catch(err => console.error("Arka plan görsel hatası:", err));
+      }, 800);
+    }
+  }, [stage, resultProfile]);
 
   const handleStart = () => {
     // Fisher-Yates shuffle
@@ -325,34 +346,20 @@ export default function InvestorTest() {
   };
 
   const handleShare = async () => {
-    if (!cardRef.current || !resultProfile) return;
-    setIsExporting(true);
+    if (!resultProfile) return;
+    
+    const shareData: any = {
+      title: "Yatırımcı Kişiliği Testi",
+      text: `Ben bir ${PROFILES[resultProfile].title} karakteriyim! Sen de yatırımcı profilini test et.`,
+      url: "https://getirihesapla.vercel.app/portfoy-simulasyonu",
+    };
+    
+    if (shareFile) {
+      shareData.files = [shareFile];
+    }
     
     try {
-      const canvas = await html2canvas(cardRef.current, {
-        useCORS: true,
-        allowTaint: false,
-        scale: 2,
-        backgroundColor: null
-      });
-      
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-      if (!blob) {
-        alert("Görsel oluşturulamadı. Lütfen tekrar deneyin.");
-        setIsExporting(false);
-        return;
-      }
-      
-      const file = new File([blob], 'korfu-analiz.png', { type: 'image/png' });
-      
-      const shareData = {
-        title: "Yatırımcı Kişiliği Testi",
-        text: `Ben bir ${PROFILES[resultProfile].title} karakteriyim! Sen de yatırımcı profilini test et.`,
-        url: "https://getirihesapla.vercel.app/portfoy-simulasyonu",
-        files: [file]
-      };
-
-      if (typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
+      if (shareFile && typeof navigator.canShare === 'function' && navigator.canShare({ files: [shareFile] })) {
         await navigator.share(shareData);
       } else if (navigator.share) {
         await navigator.share({
@@ -368,8 +375,6 @@ export default function InvestorTest() {
       console.error("Paylaşım hatası:", err);
       navigator.clipboard.writeText("https://getirihesapla.vercel.app/portfoy-simulasyonu");
       alert("Bağlantı panoya kopyalandı!");
-    } finally {
-      setIsExporting(false);
     }
   };
 
