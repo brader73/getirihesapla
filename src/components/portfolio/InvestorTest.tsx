@@ -326,6 +326,24 @@ export default function InvestorTest() {
     }
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: "Yatırımcı Kişiliği Testi",
+      text: `Ben bir ${PROFILES[resultProfile!].title} karakteriyim! Sen de yatırımcı profilini test et.`,
+      url: "https://getirihesapla.vercel.app/portfoy-simulasyonu",
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Paylaşım hatası:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareData.url);
+      alert("Link panoya kopyalandı!");
+    }
+  };
+
   const resetTest = () => {
     setStage("intro");
   };
@@ -402,20 +420,6 @@ export default function InvestorTest() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <button 
-                onClick={downloadImage}
-                disabled={isExporting}
-                className="px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.2)] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105"
-              >
-                {isExporting ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                )}
-                Analizimi İndir ve Hikayende Paylaş 🚀
-              </button>
-              <button 
                 onClick={resetTest}
                 className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all border border-slate-700"
               >
@@ -466,6 +470,34 @@ export default function InvestorTest() {
                   getirihesapla.vercel.app
                 </p>
               </div>
+            </div>
+            
+            {/* New Action Buttons */}
+            <div className="flex gap-[10px] w-full justify-center mt-[15px]">
+              <button
+                onClick={downloadImage}
+                disabled={isExporting}
+                className="flex-1 max-w-[180px] border border-[#d4af37] rounded-[20px] py-2 px-4 bg-black/40 hover:bg-black/60 text-white font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              >
+                {isExporting ? (
+                  <div className="w-4 h-4 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                )}
+                <span className="text-sm">Analizi İndir</span>
+              </button>
+              
+              <button
+                onClick={handleShare}
+                className="flex-1 max-w-[180px] border border-[#d4af37] rounded-[20px] py-2 px-4 bg-black/40 hover:bg-black/60 text-white font-medium flex items-center justify-center gap-2 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                <span className="text-sm">Paylaş</span>
+              </button>
             </div>
           </div>
           
