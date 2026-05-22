@@ -1,13 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import React, { useEffect, useState, useRef } from "react";
+import { onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
+import { auth, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [currency, setCurrency] = useState("TRY");
+  const [theme, setTheme] = useState("system");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -15,7 +20,19 @@ export default function SettingsPage() {
       setUser(currentUser);
       setLoading(false);
     });
-    return () => unsubscribe();
+    
+    setCurrency(localStorage.getItem("defaultCurrency") || "TRY");
+    setTheme(localStorage.getItem("theme") || "system");
+    
+    const handleThemeEvent = () => {
+      setTheme(localStorage.getItem("theme") || "system");
+    };
+    window.addEventListener("themeChanged", handleThemeEvent);
+    
+    return () => {
+      unsubscribe();
+      window.removeEventListener("themeChanged", handleThemeEvent);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -24,6 +41,51 @@ export default function SettingsPage() {
       router.push("/");
     } catch (error) {
       console.error("Çıkış hatası:", error);
+    }
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    
+    setUploadingImage(true);
+    try {
+      const storageRef = ref(storage, `profiles/${user.uid}`);
+      await uploadBytes(storageRef, file);
+      const photoURL = await getDownloadURL(storageRef);
+      
+      await updateProfile(auth.currentUser!, { photoURL });
+      setUser({ ...user, photoURL });
+    } catch (error) {
+      console.error("Fotoğraf yükleme hatası:", error);
+      alert("Fotoğraf yüklenirken bir hata oluştu. Lütfen dosya boyutunu kontrol edin.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setCurrency(val);
+    localStorage.setItem("defaultCurrency", val);
+  };
+
+  const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setTheme(val);
+    localStorage.setItem("theme", val);
+    
+    const root = document.documentElement;
+    if (val === "dark") {
+      root.classList.add("dark");
+    } else if (val === "light") {
+      root.classList.remove("dark");
+    } else {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        root.classList.add("dark");
+      } else {
+        root.classList.remove("dark");
+      }
     }
   };
 
@@ -53,14 +115,25 @@ export default function SettingsPage() {
             
             {user ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-4 mb-6">
-                  {user.photoURL ? (
-                    <img src={user.photoURL} alt="Profil" className="w-16 h-16 rounded-full border-2 border-amber-500" />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-2xl">
-                      🧑‍💼
+                <div className="flex items-center gap-4 mb-6 relative">
+                  <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    {uploadingImage ? (
+                      <div className="w-16 h-16 rounded-full border-2 border-amber-500 flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                        <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-amber-500"></div>
+                      </div>
+                    ) : user.photoURL ? (
+                      <img src={user.photoURL} alt="Profil" className="w-16 h-16 rounded-full border-2 border-amber-500 object-cover group-hover:opacity-75 transition-opacity" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-2xl group-hover:opacity-75 transition-opacity border-2 border-transparent group-hover:border-amber-500">
+                        🧑‍💼
+                      </div>
+                    )}
+                    <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white text-xs font-bold">Değiştir</span>
                     </div>
-                  )}
+                  </div>
+                  <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
+                  
                   <div>
                     <h3 className="font-bold text-lg text-slate-900 dark:text-white">{user.displayName || "Kullanıcı"}</h3>
                     <p className="text-sm text-slate-500">{user.email}</p>
@@ -99,18 +172,31 @@ export default function SettingsPage() {
                   <div className="font-semibold text-slate-900 dark:text-white">Varsayılan Para Birimi</div>
                   <div className="text-xs text-slate-500">Portföy ve hesaplamalar için kullanılacak döviz.</div>
                 </div>
-                <select disabled className="bg-slate-100 dark:bg-slate-800 border-none rounded p-2 text-sm text-slate-900 dark:text-white">
-                  <option>TRY (₺)</option>
-                  <option>USD ($)</option>
+                <select 
+                  value={currency} 
+                  onChange={handleCurrencyChange} 
+                  className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-sm text-slate-900 dark:text-white font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="TRY">TRY (₺)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
                 </select>
               </div>
               
               <div className="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
                 <div>
                   <div className="font-semibold text-slate-900 dark:text-white">Tema (Karanlık Mod)</div>
-                  <div className="text-xs text-slate-500">Sistem tercihinize göre otomatik ayarlanır.</div>
+                  <div className="text-xs text-slate-500">Uygulama genelinde kullanılacak renk teması.</div>
                 </div>
-                <div className="text-sm text-amber-500 font-bold">Otomatik</div>
+                <select 
+                  value={theme} 
+                  onChange={handleThemeChange} 
+                  className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-sm text-slate-900 dark:text-white font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="light">Açık</option>
+                  <option value="dark">Koyu</option>
+                  <option value="system">Otomatik</option>
+                </select>
               </div>
             </div>
           </div>

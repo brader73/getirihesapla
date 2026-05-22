@@ -63,8 +63,18 @@ export default function Header() {
 
   const toggleDarkMode = () => {
     const root = document.documentElement;
-    root.classList.toggle("dark");
-    setIsDark(root.classList.contains("dark"));
+    const isNowDark = !root.classList.contains("dark");
+    if (isNowDark) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+    setIsDark(isNowDark);
+    
+    // Dispatch a custom event so other components (like Settings) can react to it
+    window.dispatchEvent(new Event("themeChanged"));
   };
 
   const generatePDF = async () => {
