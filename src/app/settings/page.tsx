@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
-import { doc, setDoc, deleteDoc, collection, getDocs, writeBatch } from "firebase/firestore";
+import { doc, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
@@ -52,56 +52,35 @@ export default function SettingsPage() {
     
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new window.Image();
-      img.onload = async () => {
-        try {
-          const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
-          
-          const MAX_SIZE = 400;
-          if (width > height && width > MAX_SIZE) {
-            height *= MAX_SIZE / width;
-            width = MAX_SIZE;
-          } else if (height > MAX_SIZE) {
-            width *= MAX_SIZE / height;
-            height = MAX_SIZE;
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          
-          const ctx = canvas.getContext("2d");
-          if (ctx) {
-             ctx.drawImage(img, 0, 0, width, height);
-          }
-          
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
-          
-          await updateProfile(auth.currentUser!, { photoURL: compressedBase64 });
-          await setDoc(doc(db, "users", user.uid), { photoURL: compressedBase64 }, { merge: true });
-          
-          setUser({ ...user, photoURL: compressedBase64 });
-        } catch (error) {
-          console.error("Fotoğraf yükleme hatası:", error);
-          alert("Fotoğraf güncellenirken bir hata oluştu. Lütfen tekrar deneyin.");
-        } finally {
-          setUploadingImage(false);
+    
+    reader.onload = async (event) => {
+      try {
+        const rawBase64 = event.target?.result as string;
+        
+        // Frontend'in anında tepki vermesi için Auth profili güncellenir
+        if (auth.currentUser) {
+          await updateProfile(auth.currentUser, { photoURL: rawBase64 });
         }
-      };
-      
-      img.onerror = () => {
-        console.error("Görsel yüklenemedi.");
-        alert("Görsel işlenirken bir hata oluştu.");
+        
+        // Doğrudan kullanıcının talep ettiği kusursuz veritabanı mühürleme mantığı
+        try {
+          await updateDoc(doc(db, 'users', user.uid), { photoURL: rawBase64 });
+        } catch {
+          // Eğer döküman henüz yoksa oluşturarak mühürle
+          await setDoc(doc(db, 'users', user.uid), { photoURL: rawBase64 }, { merge: true });
+        }
+        
+        // UI'yi anında ve pürüzsüzce güncelle
+        setUser({ ...user, photoURL: rawBase64 });
+      } catch (error) {
+        console.error("Fotoğraf güncellenemedi:", error);
+      } finally {
         setUploadingImage(false);
-      };
-      
-      img.src = event.target?.result as string;
+      }
     };
+    
     reader.onerror = (error) => {
-      console.error("Dosya okuma hatası:", error);
-      alert("Dosya okunamadı.");
+      console.error("Dosya okunamadı:", error);
       setUploadingImage(false);
     };
   };
