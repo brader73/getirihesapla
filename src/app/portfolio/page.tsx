@@ -550,7 +550,7 @@ export default function PortfolioPage() {
       <div className="container mx-auto px-4 py-20 max-w-lg text-center">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 shadow-2xl">
           <div className="text-6xl mb-6">🔒</div>
-          <h2 className="text-2xl font-serif font-bold text-white mb-4">Midas + Premium Terminal</h2>
+          <h2 className="text-2xl font-serif font-bold text-white mb-4">Giriş Gerekli</h2>
           <p className="text-slate-400 mb-8">
             Gerçek zamanlı portföy takibi, analiz ve raporlama için sisteme giriş yapın.
           </p>
