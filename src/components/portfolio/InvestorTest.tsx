@@ -3,146 +3,324 @@
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 
-const QUESTIONS = [
+const QUESTIONS_POOL = [
   {
-    id: 1,
-    text: "Piyasa %10 düştüğünde ne yaparsınız?",
+    id: 1, text: "Yatırım yaparken nihai vizyonunuz hangisidir?",
     options: [
-      { text: "Daha fazla alım yaparım (Dipten topla)", type: "A" },
-      { text: "Ucuzlamış temettü hissesi eklerim", type: "B" },
-      { text: "Makro raporları ve fonları incelerim", type: "C" },
-      { text: "Nakite geçer veya altın alırım", type: "D" },
+      { text: "Agresif", profiles: ["P1", "P6"] },
+      { text: "Temettü", profiles: ["P2", "P10"] },
+      { text: "Dengeli", profiles: ["P3", "P8"] },
+      { text: "Defansif", profiles: ["P4", "P11"] }
     ]
   },
   {
-    id: 2,
-    text: "Yatırım vadeniz ortalama nedir?",
+    id: 2, text: "Portföyünüz bir haftada %30 erirse ilk psikolojik tepkiniz ne olur?",
     options: [
-      { text: "1 Yıldan az / Günlük-Aylık işlemler", type: "A" },
-      { text: "Ömür boyu (Sürekli nakit akışı)", type: "B" },
-      { text: "5 - 10 Yıl arası uzun vade", type: "C" },
-      { text: "Vadem yok, anaparamı korumak istiyorum", type: "D" },
+      { text: "Kaldıraçlı ekleme", profiles: ["P1", "P12"] },
+      { text: "Lot artırma", profiles: ["P5", "P2"] },
+      { text: "Sepet dengesi izleme", profiles: ["P3", "P8"] },
+      { text: "Panikle nakde geçme", profiles: ["P12", "P11"] }
     ]
   },
   {
-    id: 3,
-    text: "Portföyünüzün ana varlığı hangisidir?",
+    id: 3, text: "Bir hisse veya varlığı seçerken en çok hangi veriye güvenirsiniz?",
     options: [
-      { text: "Teknoloji Hisseleri & Kripto Paralar", type: "A" },
-      { text: "Güçlü Sanayi ve Enerji Hisseleri", type: "B" },
-      { text: "Karma Fonlar ve Küresel Endeksler", type: "C" },
-      { text: "Altın, Döviz ve Mevduat Faizi", type: "D" },
+      { text: "Sosyal medya trendi", profiles: ["P12"] },
+      { text: "Temettü geçmişi", profiles: ["P2", "P10"] },
+      { text: "F/K ve içsel değer (DCF)", profiles: ["P5"] },
+      { text: "Banka/Devlet garantisi", profiles: ["P4", "P11"] }
     ]
   },
   {
-    id: 4,
-    text: "Yatırımdaki ana başarı ölçütünüz nedir?",
+    id: 4, text: "Paranıza ne kadar süre boyunca hiç dokunmadan piyasada bırakabilirsiniz?",
     options: [
-      { text: "Endeksi %50 yenmek ve hızlı servet", type: "A" },
-      { text: "Düzenli aylık/yıllık pasif gelir elde etmek", type: "B" },
-      { text: "Enflasyon üstünde istikrarlı, risksiz getiri", type: "C" },
-      { text: "Hiç para kaybetmemek ve güvende hissetmek", type: "D" },
+      { text: "Birkaç hafta", profiles: ["P6", "P12"] },
+      { text: "10 yıl ve üzeri", profiles: ["P5", "P8", "P2"] },
+      { text: "1-5 yıl orta vade", profiles: ["P3", "P10"] },
+      { text: "Her an çekebileceğim kadar kısa", profiles: ["P11", "P4"] }
     ]
   },
   {
-    id: 5,
-    text: "Piyasaları ne sıklıkla takip edersiniz?",
+    id: 5, text: "Ekonomik kriz ve resesyon kelimeleri size ne hissettiriyor?",
     options: [
-      { text: "Her saniye, ekran ve grafik başındayım", type: "A" },
-      { text: "Temettü tarihlerinde ve bilanço dönemlerinde", type: "B" },
-      { text: "Haftalık veya aylık makro veri açıklandığında", type: "C" },
-      { text: "Nadiren, sadece büyük bir kriz varsa", type: "D" },
+      { text: "Kumar fırsatı", profiles: ["P1", "P7"] },
+      { text: "Ucuz mal toplama şansı", profiles: ["P5", "P3"] },
+      { text: "Yeniden dengeleme zamanı", profiles: ["P3", "P8"] },
+      { text: "Kaçış sinyali", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 6, text: "Teknik analiz grafiklerindeki indikatörler (RSI, MACD) sizin için ne ifade eder?",
+    options: [
+      { text: "Ana stratejimdir", profiles: ["P6"] },
+      { text: "Çok bakmam bilançoya bakarım", profiles: ["P5", "P10"] },
+      { text: "Destekleyici yan araçtır", profiles: ["P3"] },
+      { text: "Güvenmem", profiles: ["P4", "P8"] }
+    ]
+  },
+  {
+    id: 7, text: "Yatırım dünyasından kendinize bir idol seçseniz bu kim olurdu?",
+    options: [
+      { text: "Kripto Balinaları", profiles: ["P1", "P6"] },
+      { text: "Temettü Emeklileri", profiles: ["P2", "P10"] },
+      { text: "Warren Buffett", profiles: ["P5", "P3"] },
+      { text: "Merkez Bankası Başkanları", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 8, text: "Şu anki birikimlerinizin ağırlıklı gücü nerede duruyor?",
+    options: [
+      { text: "Kripto/Büyüme hisseleri", profiles: ["P1", "P9"] },
+      { text: "Temettü şirketleri", profiles: ["P2", "P10"] },
+      { text: "Fon/Eurobond sepeti", profiles: ["P3", "P8"] },
+      { text: "Altın/Mevduat", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 9, text: "Bir şirketin kar ettiğini duyduğunuzda ilk baktığınız şey nedir?",
+    options: [
+      { text: "Kaç tavan yaptırır?", profiles: ["P1", "P12"] },
+      { text: "Ne kadarını temettü dağıtır?", profiles: ["P2", "P10"] },
+      { text: "Özsermaye karlılığı ne olmuş?", profiles: ["P5", "P3"] },
+      { text: "Batma riski var mı?", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 10, text: "Halk arzlar hakkında ne düşünüyorsunuz?",
+    options: [
+      { text: "Tavan serisi bittiğinde spekülatif oynarım", profiles: ["P1", "P6"] },
+      { text: "Uzun vadeli lot biriktiririm", profiles: ["P5", "P10"] },
+      { text: "Endeks ağırlığına göre taşırım", profiles: ["P3", "P8"] },
+      { text: "İlk sinyalde çıkarım", profiles: ["P12", "P11"] }
+    ]
+  },
+  {
+    id: 11, text: "Enflasyonun %50 olduğu yerde %60 faiz veren mevduat görseniz ne yaparsınız?",
+    options: [
+      { text: "Yüzüne bakmam", profiles: ["P1", "P9"] },
+      { text: "Bir kısmını nakit akışı için düşünürüm", profiles: ["P3", "P11"] },
+      { text: "Defans dengesi için rasyonel bulurum", profiles: ["P4", "P8"] },
+      { text: "Tüm paramı yığarım", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 12, text: "Bir yatırım enstrümanı sosyal medyada çok övülüyorsa tavrınız ne olur?",
+    options: [
+      { text: "FOMO ile hemen alırım", profiles: ["P12"] },
+      { text: "Temettü vermiyorsa ilgilenmem", profiles: ["P2", "P10"] },
+      { text: "Spekülasyon kokusu alır şortlarım", profiles: ["P7", "P6"] },
+      { text: "Korkar uzak dururum", profiles: ["P4", "P5"] }
+    ]
+  },
+  {
+    id: 13, text: "Yıllık getiri hedefiniz kabaca yüzde kaçtır?",
+    options: [
+      { text: "%100 ve üzeri", profiles: ["P1", "P9"] },
+      { text: "Enflasyon üstü + pasif gelir", profiles: ["P2", "P10"] },
+      { text: "Sürdürülebilir %35 reel büyüme", profiles: ["P3", "P5"] },
+      { text: "Sadece anaparam erimesin", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 14, text: "Yatırım fonları (TEFAS) hakkında ne düşünüyorsunuz?",
+    options: [
+      { text: "Çok yavaşlar", profiles: ["P1", "P6"] },
+      { text: "Hisse yoğun temettü fonları iyi", profiles: ["P2", "P10"] },
+      { text: "Çeşitlendirmeyi profesyonellere bırakmak harika", profiles: ["P3", "P8"] },
+      { text: "Sadece altın/para piyasası fonu alırım", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 15, text: "Sizce para tam olarak nedir?",
+    options: [
+      { text: "Büyük riskler almak için oyun aracı", profiles: ["P1", "P7"] },
+      { text: "Çalışmak zorunda kalmamamı sağlayacak asker", profiles: ["P2", "P5"] },
+      { text: "Geleceğimi güvenceye alacak rasyonel güç", profiles: ["P3", "P8"] },
+      { text: "Kaybedilmemesi gereken en kutsal varlık", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 16, text: "Bir arkadaşınız size tüyo (kesin yükselecek tüyo) verdiğinde ne yaparsınız?",
+    options: [
+      { text: "Hiç düşünmeden hemen alırım", profiles: ["P12"] },
+      { text: "Finansallarına bakar, temettü durumunu incelerim", profiles: ["P5", "P2"] },
+      { text: "Kulak asmam kendi araştırmamı yaparım", profiles: ["P3", "P5"] },
+      { text: "Spekülatif kağıtlardan kaçarım", profiles: ["P4", "P8"] }
+    ]
+  },
+  {
+    id: 17, text: "Açığa satış (Short) veya VİOP kaldıraçlı işlemler hakkında fikriniz nedir?",
+    options: [
+      { text: "Kazancımı maksimize ettiğim ana silahımdır", profiles: ["P1", "P7"] },
+      { text: "Çok tehlikeli, kumar gibi görürüm", profiles: ["P12", "P2"] },
+      { text: "Sadece profesyonel hedge amaçlı kullanılmalı", profiles: ["P3", "P5"] },
+      { text: "Hayatta işim olmaz", profiles: ["P4", "P11", "P8"] }
+    ]
+  },
+  {
+    id: 18, text: "Gelişmekte olan yeni start-up'lara veya teknoloji şirketlerine yatırım yapmak?",
+    options: [
+      { text: "Geleceğin Apple'ını bulmak için harika", profiles: ["P9", "P1"] },
+      { text: "Erken aşamada temettü vermedikleri için pas geçerim", profiles: ["P2", "P10"] },
+      { text: "Sepetimde %5-10 yer ayırabilirim", profiles: ["P3", "P8"] },
+      { text: "Çok riskli, batma şansı çok yüksek", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 19, text: "Piyasa yatay (testere) bandına girdiğinde ne yaparsınız?",
+    options: [
+      { text: "Sıkılır kriptoya veya oynaklığı yüksek varlıklara geçerim", profiles: ["P1", "P12"] },
+      { text: "Temettülerimi elime alıp keyfime bakarım", profiles: ["P2", "P10"] },
+      { text: "Maliyet düşürmek için harika bir toplama dönemi derim", profiles: ["P5", "P3"] },
+      { text: "Pozisyonumu bozmadan beklerim", profiles: ["P8", "P4"] }
+    ]
+  },
+  {
+    id: 20, text: "Yatırım yaparken kendinizi ne kadar sabırlı görüyorsunuz?",
+    options: [
+      { text: "Hiç sabrım yok ekranı sürekli izlerim", profiles: ["P12", "P6"] },
+      { text: "10 yıl boyunca satmadan bekleyebilirim", profiles: ["P5", "P8"] },
+      { text: "Planladığım hedef fiyata gelene kadar rasyonel beklerim", profiles: ["P3", "P5"] },
+      { text: "Güvende olduğum sürece zaman önemli değil", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 21, text: "Yatırım kararlarınızı alırken en çok hangi platformu/aracı kullanırsınız?",
+    options: [
+      { text: "Telegram/X ve sosyal medya sinyalleri", profiles: ["P12"] },
+      { text: "Şirketlerin KAP bildirimleri ve temettü tabloları", profiles: ["P2", "P10"] },
+      { text: "Korfu Finance ve bilançolar", profiles: ["P5", "P3"] },
+      { text: "Banka danışmanları", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 22, text: "Birikimlerinizi artırmak için yaşam standardınızdan kısar mısınız?",
+    options: [
+      { text: "Hayır, parayı piyasada katlayarak harcarım", profiles: ["P1", "P12"] },
+      { text: "Evet, sonraki yıllarda daha çok pasif gelir için feda ederim", profiles: ["P2", "P10"] },
+      { text: "Belirli bir bütçe planım var rasyonel yaşarım", profiles: ["P3", "P8"] },
+      { text: "Zaten birikim yapmak ana odağım her zaman kısarım", profiles: ["P4", "P5"] }
+    ]
+  },
+  {
+    id: 23, text: "FED veya TCMB faiz kararlarını ne sıklıkla takip edersiniz?",
+    options: [
+      { text: "Sadece piyasa oynaklığı yaratıp kaldıraç fırsatı verdiğinde bakarım", profiles: ["P1", "P6"] },
+      { text: "Şirketlerimin borçlanma maliyetlerini etkilediği için incelerim", profiles: ["P5", "P3"] },
+      { text: "Makro sepet dağılımımı değiştirmek için her toplantıyı izlerim", profiles: ["P3", "P8"] },
+      { text: "Faiz arttıkça mevduat oranlarına bakarım", profiles: ["P11", "P4"] }
+    ]
+  },
+  {
+    id: 24, text: "Yabancı hisse senetleri (Apple, Tesla vb.) portföyünüzde ne kadar yer tutuyor?",
+    options: [
+      { text: "Yoğunlukla oradayım, büyük teknoloji rallilerini severim", profiles: ["P9", "P1"] },
+      { text: "Sadece yüksek temettü ödeyen yabancı şirketleri taşırım", profiles: ["P10", "P2"] },
+      { text: "Eurobond veya yabancı fonlar üzerinden dengeli taşırım", profiles: ["P3", "P8"] },
+      { text: "Vergilendirme ve riskler yüzünden uzak dururum", profiles: ["P4", "P11"] }
+    ]
+  },
+  {
+    id: 25, text: "Yatırımda en büyük korkunuz nedir?",
+    options: [
+      { text: "Treni kaçırmak ve başkaları zengin olurken izlemek (FOMO)", profiles: ["P12", "P1"] },
+      { text: "Şirketlerin temettüyü kesmesi veya azaltması", profiles: ["P2", "P10"] },
+      { text: "Rasyonel analizlerimin piyasa tarafından manipüle edilmesi", profiles: ["P5", "P3"] },
+      { text: "Anaparamın tamamen sıfırlanması", profiles: ["P4", "P11"] }
     ]
   }
 ];
 
-const PROFILES: Record<string, { title: string; desc: string; icon: string }> = {
-  "A": {
-    title: "Agresif Boğa",
-    desc: "Yüksek risk iştahına sahip, kripto ve büyüme odaklı teknoloji hisselerini seven korkusuz bir yatırımcısın.",
-    icon: "🐂"
-  },
-  "B": {
-    title: "Temettü Avcısı",
-    desc: "Düzenli pasif gelir ve nakit akışı odaklı, şirketlerin karlılığına ortak olan sadık bir yatırımcısın.",
-    icon: "💸"
-  },
-  "C": {
-    title: "Dengeli Filozof",
-    desc: "Makro ekonomiyi takip eden, sabırlı ve risklerini sepet mantığıyla dağıtan stratejik bir yatırımcısın.",
-    icon: "⚖️"
-  },
-  "D": {
-    title: "Defansif Kale",
-    desc: "Önceliği anaparayı korumak olan; altın, döviz ve mevduat odaklı garantici, sarsılmaz bir yatırımcısın.",
-    icon: "🏰"
-  }
+const PROFILES: Record<string, { title: string; desc: string; icon: string; colors: string; textStyle: string }> = {
+  "P1": { title: "Agresif Boğa", desc: "Kripto, kaldıraç ve yüksek riskli büyüme hisseleri aşığı.", icon: "🐂", colors: "from-blue-500 to-purple-500", textStyle: "text-white" },
+  "P2": { title: "Temettü Avcısı", desc: "Düzenli pasif gelir, nakit akışı ve bileşik getirinin gücüne inanan emeklilik adayı.", icon: "🌳", colors: "from-emerald-500 to-amber-400", textStyle: "text-white" },
+  "P3": { title: "Dengeli Filozof", desc: "Fon sepetleri, borsa ve tahvil dengesini makroekonomiye göre kusursuz yöneten rasyonel akıl.", icon: "⚖️", colors: "from-slate-800 to-slate-400", textStyle: "text-white" },
+  "P4": { title: "Defansif Kale", desc: "Riskten nefret eden; altın, Eurobond ve mevduat ile anaparasını mühürleyen korumacı.", icon: "🏰", colors: "from-orange-700 to-slate-900", textStyle: "text-white" },
+  "P5": { title: "Değer Balinası", desc: "Warren Buffett ekolü. Ucuz kalmış cevherleri bulup yıllarca lot biriktiren sabır küpü.", icon: "🐳", colors: "from-purple-800 to-slate-900", textStyle: "text-white" },
+  "P6": { title: "Trend Avcısı", desc: "Teknik analiz ve indikatörlerle dalgaları yakalayıp al-sat yapan piyasa sörfçüsü.", icon: "⚡", colors: "from-green-400 to-neutral-900", textStyle: "text-white" },
+  "P7": { title: "Kaos Teorisyeni", desc: "Piyasanın düşüşünden beslenen, krizleri ve ayı sezonunu fırsata çeviren kontrariyen oyuncu.", icon: "🐻", colors: "from-red-600 to-zinc-900", textStyle: "text-white" },
+  "P8": { title: "Endeks Robotu", desc: "Endeks fonlarını düzenli alıp piyasa ortalamasını hedefleyen disiplinli yatırımcı.", icon: "🤖", colors: "from-cyan-400 to-slate-100", textStyle: "text-slate-900" },
+  "P9": { title: "Melek Yatırımcı", desc: "Erken aşama girişimlere ve teknoloji odaklı geleceğe para yatırmayı seven vizyoner.", icon: "🚀", colors: "from-orange-500 to-gray-700", textStyle: "text-white" },
+  "P10": { title: "Temettü Büyümesi", desc: "Her yıl dağıttığı temettüyü istikrarlı artıran dinamik şirketlere odaklanan stratejist.", icon: "📈", colors: "from-lime-400 to-gray-300", textStyle: "text-slate-900" },
+  "P11": { title: "Likidite Kralı", desc: "Parasını asla bağlamayan, her an nakde dönebilecek araçlarla yaşayan esnek oyuncu.", icon: "🌊", colors: "from-yellow-400 to-blue-900", textStyle: "text-white" },
+  "P12": { title: "Duygusal Yatırımcı", desc: "Sosyal medya trendlerinden etkilenen, tepeden alıp dipten satmaya meyilli profil.", icon: "❗", colors: "from-pink-500 to-slate-800", textStyle: "text-white" },
 };
+
+type Question = typeof QUESTIONS_POOL[0];
 
 export default function InvestorTest() {
   const [stage, setStage] = useState<"intro" | "quiz" | "result">("intro");
+  const [activeQuestions, setActiveQuestions] = useState<Question[]>([]);
   const [currentQIndex, setCurrentQIndex] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [scores, setScores] = useState<Record<string, number>>({});
   const [resultProfile, setResultProfile] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleStart = () => {
+    // Fisher-Yates shuffle
+    const shuffled = [...QUESTIONS_POOL];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setActiveQuestions(shuffled.slice(0, 5));
     setStage("quiz");
     setCurrentQIndex(0);
-    setAnswers([]);
+    setScores({});
+    setResultProfile(null);
   };
 
-  const handleAnswer = (type: string) => {
-    const newAnswers = [...answers, type];
-    setAnswers(newAnswers);
+  const handleAnswer = (profiles: string[]) => {
+    const newScores = { ...scores };
+    profiles.forEach(p => {
+      newScores[p] = (newScores[p] || 0) + 1;
+    });
+    setScores(newScores);
 
-    if (currentQIndex < QUESTIONS.length - 1) {
+    if (currentQIndex < activeQuestions.length - 1) {
       setCurrentQIndex(currentQIndex + 1);
     } else {
-      calculateResult(newAnswers);
+      calculateResult(newScores);
     }
   };
 
-  const calculateResult = (finalAnswers: string[]) => {
-    const counts: Record<string, number> = { A: 0, B: 0, C: 0, D: 0 };
-    finalAnswers.forEach(ans => counts[ans]++);
-    
-    // Find the most frequent answer type
-    let dominantType = "A";
-    let max = counts["A"];
-    Object.keys(counts).forEach(key => {
-      if (counts[key] > max) {
-        max = counts[key];
-        dominantType = key;
+  const calculateResult = (finalScores: Record<string, number>) => {
+    let dominantProfile = "P3";
+    let max = -1;
+    Object.keys(finalScores).forEach(key => {
+      if (finalScores[key] > max) {
+        max = finalScores[key];
+        dominantProfile = key;
       }
     });
 
-    setResultProfile(dominantType);
+    setResultProfile(dominantProfile);
     setStage("result");
   };
 
   const downloadImage = async () => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || !resultProfile) return;
     setIsExporting(true);
     
     try {
       const canvas = await html2canvas(cardRef.current, {
-        scale: 3, // Yüksek kalite için
-        backgroundColor: "#0f172a", // Derin lacivert
+        scale: 3, 
+        backgroundColor: null, // Transparent to keep border-radius if needed, or let component draw bg
         useCORS: true,
+        allowTaint: true,
         logging: false
       });
       
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = image;
-      link.download = `KorfuFinance_Yatirimci_Kisiligim.png`;
+      link.download = `KorfuFinance_Yatirimci_${PROFILES[resultProfile].title.replace(/\s+/g, '_')}.png`;
       link.click();
       
-      alert("Instagram/TikTok hikayelerinde paylaşmak için görseliniz indirildi! 🎯");
     } catch (err) {
       console.error("Görsel oluşturulurken hata:", err);
+      alert("Görsel oluşturulamadı. Lütfen tekrar deneyin.");
     } finally {
       setIsExporting(false);
     }
@@ -164,7 +342,7 @@ export default function InvestorTest() {
             Portföyünü simüle ettin, peki sen nasıl bir yatırımcısın?
           </h2>
           <p className="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
-            Finansal hedeflerini, risk toleransını ve yatırım felsefeni analiz ederek sana en uygun piyasa karakterini belirliyoruz. Yatırımcı Kişiliğini Şimdi Öğren!
+            Finansal hedeflerini, risk toleransını ve yatırım felsefeni analiz ederek sana en uygun piyasa karakterini belirliyoruz. Dev havuzdan seçilen 5 soru ile Yatırımcı Kişiliğini Şimdi Öğren!
           </p>
           <button 
             onClick={handleStart}
@@ -175,26 +353,26 @@ export default function InvestorTest() {
         </div>
       )}
 
-      {stage === "quiz" && (
+      {stage === "quiz" && activeQuestions.length > 0 && (
         <div className="max-w-2xl mx-auto py-4">
           <div className="flex justify-between items-center mb-8">
-            <h3 className="text-amber-500 font-bold uppercase tracking-wider text-sm">Soru {currentQIndex + 1} / {QUESTIONS.length}</h3>
+            <h3 className="text-amber-500 font-bold uppercase tracking-wider text-sm">Soru {currentQIndex + 1} / 5</h3>
             <div className="flex gap-1">
-              {QUESTIONS.map((_, idx) => (
+              {[0, 1, 2, 3, 4].map((idx) => (
                 <div key={idx} className={`h-2 rounded-full transition-all duration-300 ${idx <= currentQIndex ? 'w-8 bg-amber-500' : 'w-4 bg-slate-800'}`} />
               ))}
             </div>
           </div>
           
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-white mb-8 leading-tight">
-            {QUESTIONS[currentQIndex].text}
+            {activeQuestions[currentQIndex].text}
           </h2>
           
           <div className="space-y-4">
-            {QUESTIONS[currentQIndex].options.map((opt, idx) => (
+            {activeQuestions[currentQIndex].options.map((opt, idx) => (
               <button
                 key={idx}
-                onClick={() => handleAnswer(opt.type)}
+                onClick={() => handleAnswer(opt.profiles)}
                 className="w-full text-left p-5 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-amber-500/50 transition-all text-slate-200 font-medium group flex items-center justify-between"
               >
                 <span>{opt.text}</span>
@@ -226,7 +404,7 @@ export default function InvestorTest() {
               <button 
                 onClick={downloadImage}
                 disabled={isExporting}
-                className="px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.2)] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.2)] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105"
               >
                 {isExporting ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -235,7 +413,7 @@ export default function InvestorTest() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
                 )}
-                Görseli İndir ve Paylaş
+                Analizimi İndir ve Hikayende Paylaş 🚀
               </button>
               <button 
                 onClick={resetTest}
@@ -250,33 +428,43 @@ export default function InvestorTest() {
             {/* Spotify Wrapped Style Card (9:16) */}
             <div 
               ref={cardRef}
-              className="w-[300px] h-[533px] bg-[#0f172a] rounded-2xl overflow-hidden relative shadow-2xl border border-slate-800 flex flex-col items-center justify-between p-8"
-              style={{ backgroundImage: "radial-gradient(circle at top right, rgba(245, 158, 11, 0.1), transparent 50%), radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.05), transparent 50%)" }}
+              className={`w-[300px] h-[533px] bg-gradient-to-br ${PROFILES[resultProfile].colors} rounded-2xl overflow-hidden relative shadow-2xl flex flex-col items-center justify-between p-8`}
             >
+              {/* Overlay mask for depth */}
+              <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+
               {/* Top Logo */}
-              <div className="flex items-center gap-2 mt-4">
-                <img src="/korfu_logo_transparent.svg" alt="Logo" className="w-8 h-8 object-contain" />
-                <span className="text-white font-serif font-bold text-lg">KorfuFinance</span>
+              <div className="relative z-10 flex items-center gap-2 mt-4 opacity-90">
+                <img src="/korfu_logo_transparent.svg" alt="Logo" className="w-8 h-8 object-contain drop-shadow-md brightness-0 invert" />
+                <span className={`font-serif font-bold text-lg ${PROFILES[resultProfile].textStyle}`}>KorfuFinance</span>
               </div>
               
               {/* Content */}
-              <div className="text-center w-full my-auto flex flex-col items-center justify-center">
-                <div className="text-amber-500 font-bold tracking-widest text-xs uppercase mb-6">Yatırımcı Profilim</div>
-                <div className="text-7xl mb-6 filter drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+              <div className="relative z-10 text-center w-full my-auto flex flex-col items-center justify-center">
+                <div className={`${PROFILES[resultProfile].textStyle} opacity-70 font-bold tracking-widest text-[10px] uppercase mb-4`}>
+                  Yatırımcı Profilim
+                </div>
+                
+                <div className="text-8xl mb-6 drop-shadow-2xl hover:scale-110 transition-transform">
                   {PROFILES[resultProfile].icon}
                 </div>
-                <div className="text-white font-serif font-bold text-3xl leading-tight mb-2">
-                  Ben bir<br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
-                    {PROFILES[resultProfile].title}im!
-                  </span>
+                
+                <div className={`${PROFILES[resultProfile].textStyle} font-serif font-extrabold text-3xl leading-tight mb-4 drop-shadow-lg`}>
+                  <span className="opacity-90 text-2xl font-normal block mb-1">Ben bir</span>
+                  {PROFILES[resultProfile].title}
+                </div>
+                
+                <div className={`${PROFILES[resultProfile].textStyle} opacity-90 text-xs font-medium px-2 leading-relaxed drop-shadow-md`}>
+                  "{PROFILES[resultProfile].desc}"
                 </div>
               </div>
               
               {/* Footer */}
-              <div className="w-full text-center mt-auto pb-4">
-                <div className="w-12 h-1 bg-amber-500 mx-auto mb-4 rounded-full opacity-50" />
-                <p className="text-slate-400 font-semibold text-xs tracking-wider">getirihesapla.vercel.app</p>
+              <div className="relative z-10 w-full text-center mt-auto pb-2">
+                <div className={`w-12 h-1 bg-current opacity-30 mx-auto mb-4 rounded-full ${PROFILES[resultProfile].textStyle}`} />
+                <p className={`${PROFILES[resultProfile].textStyle} opacity-70 font-bold text-[10px] tracking-widest`}>
+                  getirihesapla.vercel.app
+                </p>
               </div>
             </div>
           </div>
