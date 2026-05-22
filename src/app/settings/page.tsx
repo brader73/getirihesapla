@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
-import { auth, storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db } from "@/lib/firebase";
+import { doc, setDoc, deleteDoc, collection, getDocs, writeBatch } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
@@ -49,18 +49,64 @@ export default function SettingsPage() {
     if (!file || !user) return;
     
     setUploadingImage(true);
-    try {
-      const storageRef = ref(storage, `profiles/${user.uid}`);
-      await uploadBytes(storageRef, file);
-      const photoURL = await getDownloadURL(storageRef);
-      
-      await updateProfile(auth.currentUser!, { photoURL });
-      setUser({ ...user, photoURL });
-    } catch (error) {
-      console.error("Fotoğraf yükleme hatası:", error);
-      alert("Fotoğraf yüklenirken bir hata oluştu. Lütfen dosya boyutunu kontrol edin.");
-    } finally {
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      try {
+        const base64Image = reader.result as string;
+        
+        // Update auth profile
+        await updateProfile(auth.currentUser!, { photoURL: base64Image });
+        
+        // Update user document in Firestore (for persistence across devices if needed)
+        await setDoc(doc(db, "users", user.uid), { photoURL: base64Image }, { merge: true });
+        
+        setUser({ ...user, photoURL: base64Image });
+      } catch (error) {
+        console.error("Fotoğraf yükleme hatası:", error);
+        alert("Fotoğraf güncellenirken bir hata oluştu. Dosya çok büyük olabilir (Önerilen: < 1MB).");
+      } finally {
+        setUploadingImage(false);
+      }
+    };
+    reader.onerror = (error) => {
+      console.error("Dosya okuma hatası:", error);
+      alert("Dosya okunamadı.");
       setUploadingImage(false);
+    };
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    
+    const confirmDelete = window.confirm("Hesabınızı ve tüm geçmiş hesaplamalarınızı kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.");
+    if (!confirmDelete) return;
+    
+    try {
+      // 1. Delete history logs from Firestore
+      const historyRef = collection(db, "users", user.uid, "history");
+      const historySnapshot = await getDocs(historyRef);
+      const batch = writeBatch(db);
+      historySnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      
+      // 2. Delete user document from Firestore (if exists)
+      await deleteDoc(doc(db, "users", user.uid));
+      
+      // 3. Delete auth account
+      await auth.currentUser?.delete();
+      
+      router.push("/");
+    } catch (error: any) {
+      console.error("Hesap silme hatası:", error);
+      if (error.code === 'auth/requires-recent-login') {
+        alert("Güvenlik nedeniyle hesabınızı silmek için lütfen çıkış yapıp tekrar giriş yapın ve işlemi tekrarlayın.");
+      } else {
+        alert("Hesap silinirken bir hata oluştu.");
+      }
     }
   };
 
@@ -128,8 +174,12 @@ export default function SettingsPage() {
                         🧑‍💼
                       </div>
                     )}
-                    <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-white text-xs font-bold">Değiştir</span>
+                    <div className="absolute inset-0 rounded-full bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="text-white text-[10px] font-bold tracking-wider">Değiştir</span>
                     </div>
                   </div>
                   <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
@@ -224,12 +274,20 @@ export default function SettingsPage() {
           </div>
 
           {user && (
-            <button 
-              onClick={handleLogout}
-              className="w-full py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition"
-            >
-              Güvenli Çıkış Yap
-            </button>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={handleLogout}
+                className="w-full py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition"
+              >
+                Güvenli Çıkış Yap
+              </button>
+              <button 
+                onClick={handleDeleteAccount}
+                className="w-full py-3 text-red-600 dark:text-red-500 hover:text-white border border-transparent hover:border-red-600 hover:bg-red-600 rounded-xl font-bold transition text-sm"
+              >
+                Hesabı Kapat
+              </button>
+            </div>
           )}
         </div>
 
