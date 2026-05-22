@@ -8,15 +8,15 @@ const crimsonPro = Crimson_Pro({ subsets: ["latin"], variable: "--font-crimson-p
 
 export const metadata: Metadata = {
   title: "Korfu Finance | Profesyonel Analiz",
-  description: "Profesyonel yatırım ve finans hesaplama terminali.",
-  keywords: ["finans", "borsa", "kripto", "yatırım", "analiz", "korfufinance"],
+  description: "Korfu Finance; canlı BIST, kripto ve döviz verileriyle desteklenen, bileşik faiz, Gordon büyüme modeli ve portföy simülasyonu sunan profesyonel, reklamsız ve minimalist finansal hesaplama terminalidir.",
+  keywords: ["getiri hesapla", "bileşik faiz hesaplama", "portföy simülasyonu", "gordon büyüme modeli", "hisse değerleme", "borsa portföy takip", "canlı bist verileri", "temettü hesaplama", "korfu finance", "kişisel finans yönetimi", "finansal terminal", "faiz hesaplama", "kredi hesaplama", "gelir gider takip"],
   icons: {
     icon: '/korfu_favicon.svg',
     apple: '/korfu_app_icon.svg',
   },
   openGraph: {
     title: "Korfu Finance | Profesyonel Analiz",
-    description: "Profesyonel yatırım ve finans hesaplama terminali.",
+    description: "Korfu Finance; canlı BIST, kripto ve döviz verileriyle desteklenen, bileşik faiz, Gordon büyüme modeli ve portföy simülasyonu sunan profesyonel, reklamsız ve minimalist finansal hesaplama terminalidir.",
     url: "https://www.korfufinance.com",
     siteName: "Korfu Finance",
     images: [
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Korfu Finance",
-    description: "Profesyonel yatırım ve finans hesaplama terminali.",
+    title: "Korfu Finance | Profesyonel Analiz",
+    description: "Korfu Finance; canlı BIST, kripto ve döviz verileriyle desteklenen, bileşik faiz, Gordon büyüme modeli ve portföy simülasyonu sunan profesyonel, reklamsız ve minimalist finansal hesaplama terminalidir.",
     images: ["/korfu_app_icon.svg"],
   },
 };
