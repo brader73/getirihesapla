@@ -52,23 +52,52 @@ export default function SettingsPage() {
     
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = async () => {
-      try {
-        const base64Image = reader.result as string;
-        
-        // Update auth profile
-        await updateProfile(auth.currentUser!, { photoURL: base64Image });
-        
-        // Update user document in Firestore (for persistence across devices if needed)
-        await setDoc(doc(db, "users", user.uid), { photoURL: base64Image }, { merge: true });
-        
-        setUser({ ...user, photoURL: base64Image });
-      } catch (error) {
-        console.error("Fotoğraf yükleme hatası:", error);
-        alert("Fotoğraf güncellenirken bir hata oluştu. Dosya çok büyük olabilir (Önerilen: < 1MB).");
-      } finally {
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.onload = async () => {
+        try {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_SIZE = 400;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+             ctx.drawImage(img, 0, 0, width, height);
+          }
+          
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          
+          await updateProfile(auth.currentUser!, { photoURL: compressedBase64 });
+          await setDoc(doc(db, "users", user.uid), { photoURL: compressedBase64 }, { merge: true });
+          
+          setUser({ ...user, photoURL: compressedBase64 });
+        } catch (error) {
+          console.error("Fotoğraf yükleme hatası:", error);
+          alert("Fotoğraf güncellenirken bir hata oluştu. Lütfen tekrar deneyin.");
+        } finally {
+          setUploadingImage(false);
+        }
+      };
+      
+      img.onerror = () => {
+        console.error("Görsel yüklenemedi.");
+        alert("Görsel işlenirken bir hata oluştu.");
         setUploadingImage(false);
-      }
+      };
+      
+      img.src = event.target?.result as string;
     };
     reader.onerror = (error) => {
       console.error("Dosya okuma hatası:", error);
