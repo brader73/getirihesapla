@@ -1,118 +1,50 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
-interface TickerData {
-  symbol: string;
-  title: string;
-  price: string;
-  change: string;
-  changePercent: string;
-  isPositive: boolean;
-}
+import React, { useMemo } from "react";
+import { useMarketData } from "@/context/MarketContext";
 
 export default function TVTicker() {
-  const [tickerData, setTickerData] = useState<TickerData[]>([]);
+  const { dataMap } = useMarketData();
 
-  useEffect(() => {
-    let isMounted = true;
+  const tickerData = useMemo(() => {
+    const symbols = [
+      { id: "GOLD", title: "Ons Altın", type: "yahoo" },
+      { id: "BTCUSDT", title: "Bitcoin", type: "crypto" },
+      { id: "ETHUSDT", title: "Ethereum", type: "crypto" },
+      { id: "THYAO", title: "THYAO", type: "yahoo" },
+      { id: "USDTRY", title: "USD/TRY", type: "crypto" }
+    ];
 
-    async function fetchTickerData() {
-      const symbols = [
-        { id: "XAUUSD", title: "Ons Altın", type: "binance", symbol: "XAUUSDT" },
-        { id: "BTCUSDT", title: "Bitcoin", type: "binance", symbol: "BTCUSDT" },
-        { id: "ETHUSDT", title: "Ethereum", type: "binance", symbol: "ETHUSDT" },
-        { id: "THYAO", title: "THYAO", type: "yahoo", symbol: "THYAO.IS" }
-      ];
+    const results = [];
 
-      const results: TickerData[] = [];
-
-      for (const item of symbols) {
-        if (item.type === "binance") {
-          try {
-            // Sıkı try-catch bloğu
-            const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${item.symbol}`);
-            const data = await res.json();
-            
-            // Rasyonel veri kontrolü (data && data.lastPrice)
-            if (data && data.lastPrice) {
-              const price = parseFloat(data.lastPrice);
-              const change = parseFloat(data.priceChange);
-              const changePercent = parseFloat(data.priceChangePercent);
-              
-              results.push({
-                symbol: item.id,
-                title: item.title,
-                price: price < 10 ? price.toFixed(4) : price.toFixed(2),
-                change: change.toFixed(2),
-                changePercent: changePercent.toFixed(2),
-                isPositive: change >= 0
-              });
-            }
-          } catch (error) {
-            console.error(`${item.title} fetch error:`, error);
-          }
-        } else if (item.type === "yahoo") {
-          try {
-            // Sıkı try-catch bloğu
-            const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${item.symbol}?range=1d&interval=5m`;
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-            const res = await fetch(proxyUrl);
-            const data = await res.json();
-
-            // Rasyonel veri kontrolü
-            if (data && data.chart && data.chart.result && data.chart.result.length > 0) {
-              const result = data.chart.result[0];
-              const meta = result.meta;
-              if (meta && meta.regularMarketPrice) {
-                const currentPrice = meta.regularMarketPrice;
-                const prevClose = meta.chartPreviousClose;
-                const change = currentPrice - prevClose;
-                const changePercent = (change / prevClose) * 100;
-
-                results.push({
-                  symbol: item.id,
-                  title: item.title,
-                  price: `${currentPrice.toFixed(2)} ₺`,
-                  change: change.toFixed(2),
-                  changePercent: changePercent.toFixed(2),
-                  isPositive: change >= 0
-                });
-              }
-            } else {
-              throw new Error("Geçersiz veri yapısı");
-            }
-          } catch (error) {
-            console.error(`${item.title} fetch error:`, error);
-            // YEDEK VERİ MEKANİZMASI (Fallback)
-            // THYAO verisi çekilemediğinde hata vermek (❗) yerine stabil akışı koru
-            if (item.id === "THYAO") {
-              results.push({
-                symbol: item.id,
-                title: item.title,
-                price: "312.50 ₺",
-                change: "0.00",
-                changePercent: "0.00",
-                isPositive: true
-              });
-            }
-          }
+    for (const item of symbols) {
+      const data = dataMap[item.id];
+      if (data) {
+        let formattedPrice = "";
+        
+        // Fiyat formatlama
+        if (item.id === "BTCUSDT" || item.id === "ETHUSDT" || item.id === "GOLD") {
+          formattedPrice = `$${data.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else if (item.id === "THYAO") {
+          formattedPrice = `${data.price.toFixed(2)} ₺`;
+        } else if (item.id === "USDTRY") {
+          formattedPrice = data.price.toFixed(4);
+        } else {
+          formattedPrice = data.price.toFixed(2);
         }
-      }
 
-      if (isMounted && results.length > 0) {
-        setTickerData(results);
+        results.push({
+          symbol: item.id,
+          title: item.title,
+          price: formattedPrice,
+          changePercent: data.change.toFixed(2),
+          isPositive: data.change >= 0
+        });
       }
     }
 
-    fetchTickerData();
-    const interval = setInterval(fetchTickerData, 60000); // 1 dakikada bir güncelle
-
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, []);
+    return results;
+  }, [dataMap]);
 
   if (tickerData.length === 0) {
     return (
@@ -123,7 +55,7 @@ export default function TVTicker() {
   }
 
   // Sonsuz döngü hissi vermek için verileri kopyala
-  const tickerItems = [...tickerData, ...tickerData, ...tickerData, ...tickerData, ...tickerData];
+  const tickerItems = [...tickerData, ...tickerData, ...tickerData, ...tickerData, ...tickerData, ...tickerData];
 
   return (
     <div className="w-full h-[46px] bg-[#0A192F] border-b-2 border-[#D4AF37] flex items-center overflow-hidden relative z-50 shadow-md">
@@ -135,7 +67,7 @@ export default function TVTicker() {
         .animate-ticker {
           display: flex;
           width: max-content;
-          animation: ticker-marquee 35s linear infinite;
+          animation: ticker-marquee 40s linear infinite;
         }
         .animate-ticker:hover {
           animation-play-state: paused;
@@ -154,7 +86,7 @@ export default function TVTicker() {
             </span>
             <span className="text-white font-semibold">{item.price}</span>
             <span className={item.isPositive ? "text-emerald-500" : "text-red-500"}>
-              {item.isPositive ? "+" : ""}{item.change} ({item.isPositive ? "+" : ""}{item.changePercent}%)
+              {item.isPositive ? "+" : ""}{item.changePercent}%
             </span>
           </div>
         ))}
