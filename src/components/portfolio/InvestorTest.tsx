@@ -305,19 +305,17 @@ export default function InvestorTest() {
     
     try {
       const canvas = await html2canvas(cardRef.current, {
-        scale: 3, 
-        backgroundColor: null, // Transparent to keep border-radius if needed, or let component draw bg
         useCORS: true,
         allowTaint: true,
-        logging: false
+        scale: 2,
+        backgroundColor: null
       });
       
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = image;
-      link.download = `KorfuFinance_Yatirimci_${PROFILES[resultProfile].title.replace(/\s+/g, '_')}.png`;
+      link.download = `korfu-analiz.png`;
       link.click();
-      
     } catch (err) {
       console.error("Görsel oluşturulurken hata:", err);
       alert("Görsel oluşturulamadı. Lütfen tekrar deneyin.");
@@ -327,20 +325,60 @@ export default function InvestorTest() {
   };
 
   const handleShare = async () => {
-    const shareData = {
-      title: "Yatırımcı Kişiliği Testi",
-      text: `Ben bir ${PROFILES[resultProfile!].title} karakteriyim! Sen de yatırımcı profilini test et.`,
-      url: "https://getirihesapla.vercel.app/portfoy-simulasyonu",
-    };
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error("Paylaşım hatası:", err);
-      }
-    } else {
-      navigator.clipboard.writeText(shareData.url);
+    if (!cardRef.current || !resultProfile) return;
+    setIsExporting(true);
+    
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 2,
+        backgroundColor: null
+      });
+      
+      canvas.toBlob(async (blob) => {
+        setIsExporting(false);
+        if (!blob) {
+          alert("Görsel oluşturulamadı. Lütfen tekrar deneyin.");
+          return;
+        }
+        
+        const file = new File([blob], 'korfu-analiz.png', { type: 'image/png' });
+        
+        const shareData = {
+          title: "Yatırımcı Kişiliği Testi",
+          text: `Ben bir ${PROFILES[resultProfile].title} karakteriyim! Sen de yatırımcı profilini test et.`,
+          url: "https://getirihesapla.vercel.app/portfoy-simulasyonu",
+          files: [file]
+        };
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share(shareData);
+          } catch (err) {
+            console.error("Paylaşım hatası:", err);
+          }
+        } else if (navigator.share) {
+          try {
+            await navigator.share({
+              title: shareData.title,
+              text: shareData.text,
+              url: shareData.url
+            });
+          } catch (err) {
+            console.error("Paylaşım hatası:", err);
+          }
+        } else {
+          navigator.clipboard.writeText(shareData.url);
+          alert("Link panoya kopyalandı!");
+        }
+      }, 'image/png');
+      
+    } catch (err) {
+      console.error("Paylaşım sırasında görsel oluşturulurken hata:", err);
+      navigator.clipboard.writeText("https://getirihesapla.vercel.app/portfoy-simulasyonu");
       alert("Link panoya kopyalandı!");
+      setIsExporting(false);
     }
   };
 
