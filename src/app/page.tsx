@@ -33,11 +33,11 @@ export default function Home() {
           <h2 className="text-xl font-serif font-bold text-amber-600 mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">
             Hesaplama Araçları
           </h2>
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <div className="flex-1 w-full">
+          <div className="flex flex-col gap-10">
+            <div className="w-full">
               <CalculatorGrid />
             </div>
-            <div className="w-full lg:w-[350px]">
+            <div className="w-full">
               <HistoryPanel />
             </div>
           </div>

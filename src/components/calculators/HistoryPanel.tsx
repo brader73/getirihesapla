@@ -54,7 +54,7 @@ export default function HistoryPanel() {
   if (!user) return null;
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm sticky top-24 transform transition-all duration-500 animate-fade-in-down">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm transform transition-all duration-500 animate-fade-in-down w-full">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 shadow-inner">
           <span role="img" aria-label="history">🕒</span>
@@ -76,7 +76,7 @@ export default function HistoryPanel() {
           Henüz kaydedilmiş bir hesaplamanız bulunmuyor.
         </div>
       ) : (
-        <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {history.map((item) => (
             <div 
               key={item.id} 
