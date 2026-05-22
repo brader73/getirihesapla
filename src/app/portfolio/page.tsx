@@ -306,22 +306,98 @@ export default function PortfolioPage() {
   };
 
   const generatePDF = async () => {
-    const element = pdfRef.current;
-    if (!element) return;
     setIsExporting(true);
-    
-    // Create a temporary header for the PDF to support Turkish characters perfectly via HTML
-    const printHeader = document.createElement("div");
-    printHeader.innerHTML = `
-      <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #334155;">
-        <h1 style="color: #f8fafc; font-size: 24px; margin: 0; font-family: sans-serif;">KorfuFinance Premium Portföy Raporu</h1>
-        <p style="color: #94a3b8; font-size: 14px; margin-top: 8px; font-family: sans-serif;">Oluşturma Tarihi: ${new Date().toLocaleString("tr-TR")}</p>
-      </div>
-    `;
-    element.insertBefore(printHeader, element.firstChild);
 
     try {
-      const imgData = await toPng(element, { 
+      const reportContainer = document.createElement("div");
+      reportContainer.style.position = "absolute";
+      reportContainer.style.left = "-9999px";
+      reportContainer.style.top = "0";
+      reportContainer.style.width = "800px";
+      reportContainer.style.backgroundColor = "#0b1121"; // Slate 950
+      reportContainer.style.color = "#f8fafc";
+      reportContainer.style.padding = "40px";
+      reportContainer.style.fontFamily = "sans-serif";
+      
+      const chartCanvas = document.querySelector("#portfolio-doughnut-container canvas") as HTMLCanvasElement;
+      const chartImgSrc = chartCanvas ? chartCanvas.toDataURL("image/png") : "";
+
+      const tableRows = portfolio.map(asset => {
+        const data = getPriceData(asset);
+        const isDailyPos = data.changePct >= 0;
+        const value = asset.amount * data.price;
+        const cost = asset.amount * asset.avgPrice;
+        const profit = value - cost;
+        
+        return `
+          <tr style="border-bottom: 1px solid #1e293b;">
+            <td style="padding: 12px 8px; font-weight: bold;">${asset.symbol}</td>
+            <td style="padding: 12px 8px; text-align: right;">${formatCurrency(data.price, asset.currency)}</td>
+            <td style="padding: 12px 8px; text-align: right; color: ${isDailyPos ? '#10b981' : '#ef4444'}">${isDailyPos ? '+' : ''}${data.changePct.toFixed(2)}%</td>
+            <td style="padding: 12px 8px; text-align: right;">${formatCurrency(asset.avgPrice, asset.currency)}</td>
+            <td style="padding: 12px 8px; text-align: right;">${asset.amount}</td>
+            <td style="padding: 12px 8px; text-align: right; font-weight: bold;">${formatCurrency(value, asset.currency)}</td>
+            <td style="padding: 12px 8px; text-align: right; color: ${profit >= 0 ? '#10b981' : '#ef4444'}">${formatCurrency(profit, asset.currency)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      reportContainer.innerHTML = `
+        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #334155; padding-bottom: 20px;">
+          <h1 style="font-size: 32px; margin: 0; color: #fbbf24;">KorfuFinance Premium Portföy Raporu</h1>
+          <p style="color: #94a3b8; margin-top: 10px; font-size: 14px;">Oluşturma Tarihi: ${new Date().toLocaleString("tr-TR")}</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 40px; background-color: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #1e293b;">
+          <div>
+            <div style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Toplam Bakiye</div>
+            <div style="font-size: 28px; font-weight: bold; color: #fff;">${formatCurrency(metrics.totalTRY, "TRY")}</div>
+          </div>
+          <div>
+            <div style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Net Kâr / Zarar</div>
+            <div style="font-size: 24px; font-weight: bold; color: ${metrics.totalProfitTRY >= 0 ? '#10b981' : '#ef4444'};">
+              ${formatCurrency(metrics.totalProfitTRY, "TRY")}
+            </div>
+          </div>
+          <div>
+            <div style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Getiri (ROI)</div>
+            <div style="font-size: 24px; font-weight: bold; color: ${metrics.profitPercentage >= 0 ? '#10b981' : '#ef4444'};">
+              ${metrics.profitPercentage.toFixed(2)}%
+            </div>
+          </div>
+        </div>
+
+        <h2 style="font-size: 20px; color: #f8fafc; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 20px;">Varlık Listesi ve Performans</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 40px;">
+          <thead>
+            <tr style="border-bottom: 2px solid #334155; color: #94a3b8; text-transform: uppercase; font-size: 12px;">
+              <th style="padding: 12px 8px; text-align: left;">Varlık</th>
+              <th style="padding: 12px 8px; text-align: right;">Fiyat</th>
+              <th style="padding: 12px 8px; text-align: right;">24S Değişim</th>
+              <th style="padding: 12px 8px; text-align: right;">Maliyet</th>
+              <th style="padding: 12px 8px; text-align: right;">Miktar</th>
+              <th style="padding: 12px 8px; text-align: right;">Toplam Değer</th>
+              <th style="padding: 12px 8px; text-align: right;">Kâr/Zarar</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows || `<tr><td colspan="7" style="text-align: center; padding: 20px;">Veri bulunamadı.</td></tr>`}
+          </tbody>
+        </table>
+
+        ${chartImgSrc ? `
+          <div style="page-break-inside: avoid;">
+            <h2 style="font-size: 20px; color: #f8fafc; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 20px;">Varlık Dağılım Grafiği</h2>
+            <div style="text-align: center; background-color: #0f172a; padding: 30px; border-radius: 12px; border: 1px solid #1e293b;">
+              <img src="${chartImgSrc}" style="max-height: 350px; max-width: 100%;" />
+            </div>
+          </div>
+        ` : ''}
+      `;
+
+      document.body.appendChild(reportContainer);
+
+      const imgData = await toPng(reportContainer, { 
         backgroundColor: "#0b1121",
         pixelRatio: 2,
       });
@@ -329,7 +405,7 @@ export default function PortfolioPage() {
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = 190; // margin 10mm each side
       const pageHeight = 297;
-      const imgHeight = (element.offsetHeight * pdfWidth) / element.offsetWidth;
+      const imgHeight = (reportContainer.offsetHeight * pdfWidth) / reportContainer.offsetWidth;
       
       let heightLeft = imgHeight;
       let position = 10;
@@ -345,14 +421,11 @@ export default function PortfolioPage() {
       }
       
       pdf.save("KorfuFinance_Premium_Portfoy.pdf");
+      document.body.removeChild(reportContainer);
     } catch (error) {
       console.error("PDF oluşturulurken hata:", error);
       alert("PDF oluşturulamadı: " + (error as Error).message);
     } finally {
-      // Remove the temporary header
-      if (printHeader.parentNode) {
-        printHeader.parentNode.removeChild(printHeader);
-      }
       setIsExporting(false);
     }
   };
@@ -600,7 +673,7 @@ export default function PortfolioPage() {
               {portfolio.length === 0 ? (
                 <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">Veri Yok</div>
               ) : (
-                <div className="flex-1 min-h-[250px] relative">
+                <div className="flex-1 min-h-[250px] relative" id="portfolio-doughnut-container">
                   <Doughnut data={chartData} options={chartOptions} />
                 </div>
               )}
