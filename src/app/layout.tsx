@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: "Korfu Finance | Profesyonel Analiz",
   description: "Profesyonel yatırım ve finans hesaplama terminali.",
   keywords: ["finans", "borsa", "kripto", "yatırım", "analiz", "korfufinance"],
-  manifest: "/manifest.json",
   icons: {
     icon: '/korfu_favicon.svg',
     apple: '/korfu_app_icon.svg',
@@ -60,6 +59,7 @@ export default function RootLayout({
   return (
     <html lang="tr" suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Korfu%20Finance%22%2C%22short_name%22%3A%22Korfu%20Finance%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22%2Fkorfu_app_icon.svg%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -71,6 +71,20 @@ export default function RootLayout({
                   document.documentElement.classList.remove('dark');
                 }
               } catch (_) {}
+              
+              // Inline Service Worker for PWA Install Prompt
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  const swCode = "self.addEventListener('install', (e) => { self.skipWaiting(); }); self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); }); self.addEventListener('fetch', (e) => {});";
+                  const blob = new Blob([swCode], { type: 'application/javascript' });
+                  const swUrl = URL.createObjectURL(blob);
+                  navigator.serviceWorker.register(swUrl).then(function() {
+                    console.log('Inline Service Worker registered successfully for PWA.');
+                  }).catch(function(err) {
+                    console.error('Service Worker registration failed:', err);
+                  });
+                });
+              }
             `,
           }}
         />
