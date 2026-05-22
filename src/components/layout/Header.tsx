@@ -80,18 +80,20 @@ export default function Header() {
   const generatePDF = async () => {
     setIsPdfLoading(true);
     try {
-      const docPDF = new jsPDF("p", "mm", "a4");
-      
-      docPDF.setFontSize(22);
-      docPDF.setTextColor(15, 23, 42); 
-      docPDF.text("GetiriHesapla.com Stratejik Analiz Raporu", 105, 20, { align: "center" });
-      
-      docPDF.setFontSize(12);
-      docPDF.setTextColor(100);
-      docPDF.text("Oluşturma Tarihi: " + new Date().toLocaleString("tr-TR"), 105, 30, { align: "center" });
-      
       const container = document.getElementById("pdf-export-area");
       if (!container) throw new Error("Export alanı bulunamadı");
+      
+      const printHeader = document.createElement("div");
+      printHeader.id = "pdf-print-header-temp";
+      printHeader.innerHTML = `
+        <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #334155;">
+          <h1 style="color: #f8fafc; font-size: 24px; margin: 0; font-family: sans-serif;">KorfuFinance Stratejik Analiz Raporu</h1>
+          <p style="color: #94a3b8; font-size: 14px; margin-top: 8px; font-family: sans-serif;">Oluşturma Tarihi: ${new Date().toLocaleString("tr-TR")}</p>
+        </div>
+      `;
+      container.insertBefore(printHeader, container.firstChild);
+      
+      const docPDF = new jsPDF("p", "mm", "a4");
       
       const canvas = await html2canvas(container, {
           scale: 1.5, 
@@ -122,6 +124,11 @@ export default function Header() {
       console.error("PDF Hatası:", error);
       alert("PDF oluşturulurken bir hata meydana geldi.");
     } finally {
+      const container = document.getElementById("pdf-export-area");
+      const headerToRemove = document.getElementById("pdf-print-header-temp");
+      if (container && headerToRemove) {
+        container.removeChild(headerToRemove);
+      }
       setIsPdfLoading(false);
     }
   };

@@ -309,18 +309,55 @@ export default function PortfolioPage() {
     const element = pdfRef.current;
     if (!element) return;
     setIsExporting(true);
+    
+    // Create a temporary header for the PDF to support Turkish characters perfectly via HTML
+    const printHeader = document.createElement("div");
+    printHeader.innerHTML = `
+      <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #334155;">
+        <h1 style="color: #f8fafc; font-size: 24px; margin: 0; font-family: sans-serif;">KorfuFinance Premium Portföy Raporu</h1>
+        <p style="color: #94a3b8; font-size: 14px; margin-top: 8px; font-family: sans-serif;">Oluşturma Tarihi: ${new Date().toLocaleString("tr-TR")}</p>
+      </div>
+    `;
+    element.insertBefore(printHeader, element.firstChild);
+
     try {
-      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#0f172a" });
+      const canvas = await html2canvas(element, { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: "#0b1121",
+        onclone: (clonedDoc) => {
+          // Adjust styles if necessary for printing
+        }
+      });
+      
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("l", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 10, pdfWidth, pdfHeight);
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = 190; // margin 10mm each side
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 10;
+      
+      pdf.addImage(imgData, "PNG", 10, position, pdfWidth, imgHeight);
+      heightLeft -= (pageHeight - position);
+      
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 10, position, pdfWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
       pdf.save("KorfuFinance_Premium_Portfoy.pdf");
     } catch (error) {
       console.error("PDF oluşturulurken hata:", error);
-      alert("PDF oluşturulamadı.");
+      alert("PDF oluşturulamadı: " + (error as Error).message);
     } finally {
+      // Remove the temporary header
+      if (printHeader.parentNode) {
+        printHeader.parentNode.removeChild(printHeader);
+      }
       setIsExporting(false);
     }
   };
