@@ -143,7 +143,10 @@ export default function Header() {
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-        <div className="flex items-center gap-2 md:hidden">
+        <div 
+          onClick={() => window.location.href = '/'}
+          className="flex items-center gap-2 md:hidden cursor-pointer hover:opacity-80 transition-opacity"
+        >
           <img src="/korfu_favicon.svg" alt="Logo" className="w-8 h-8 object-contain" />
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
             KorfuFinance
