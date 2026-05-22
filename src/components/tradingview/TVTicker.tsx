@@ -48,8 +48,8 @@ export default function TVTicker() {
 
   if (tickerData.length === 0) {
     return (
-      <div className="w-full h-[46px] bg-[#0A192F] border-b-2 border-[#D4AF37] flex items-center justify-center overflow-hidden relative z-50 shadow-md">
-        <span className="text-[#D4AF37] text-xs font-semibold tracking-wider">Piyasa Verileri Yükleniyor...</span>
+      <div className="w-full h-[54px] bg-[#0A192F] border-b-2 border-[#D4AF37] flex items-center justify-center overflow-hidden relative z-50 shadow-md">
+        <span className="text-[#D4AF37] text-[15px] font-semibold tracking-wider">Piyasa Verileri Yükleniyor...</span>
       </div>
     );
   }
@@ -58,7 +58,7 @@ export default function TVTicker() {
   const tickerItems = [...tickerData, ...tickerData, ...tickerData, ...tickerData, ...tickerData, ...tickerData];
 
   return (
-    <div className="w-full h-[46px] bg-[#0A192F] border-b-2 border-[#D4AF37] flex items-center overflow-hidden relative z-50 shadow-md">
+    <div className="w-full h-[54px] bg-[#0A192F] border-b-2 border-[#D4AF37] flex items-center overflow-hidden relative z-50 shadow-md">
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes ticker-marquee {
           0% { transform: translateX(0); }
@@ -76,12 +76,12 @@ export default function TVTicker() {
       
       <div className="animate-ticker whitespace-nowrap">
         {tickerItems.map((item, index) => (
-          <div key={`${item.symbol}-${index}`} className="flex items-center mx-6 gap-3 text-[13px] font-medium tracking-wide">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              {item.title === "Ons Altın" && <span className="text-amber-400">🥇</span>}
-              {item.title === "Bitcoin" && <span className="text-orange-400">₿</span>}
-              {item.title === "Ethereum" && <span className="text-indigo-400">⟠</span>}
-              {item.title === "THYAO" && <span className="text-slate-400 bg-slate-800 rounded-full w-5 h-5 flex items-center justify-center text-[10px] border border-slate-700">T</span>}
+          <div key={`${item.symbol}-${index}`} className="flex items-center mx-12 gap-5 text-[15px] font-semibold tracking-wide">
+            <span className="text-slate-200 flex items-center gap-2">
+              {item.title === "Ons Altın" && <span className="text-amber-400 text-lg">🥇</span>}
+              {item.title === "Bitcoin" && <span className="text-orange-400 text-lg">₿</span>}
+              {item.title === "Ethereum" && <span className="text-indigo-400 text-lg">⟠</span>}
+              {item.title === "THYAO" && <span className="text-slate-300 bg-slate-800 rounded-full w-6 h-6 flex items-center justify-center text-[12px] border border-slate-600">T</span>}
               <span>{item.title}</span>
             </span>
             <span className="text-white font-semibold">{item.price}</span>

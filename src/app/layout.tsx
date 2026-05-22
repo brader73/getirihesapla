@@ -98,7 +98,7 @@ export default function RootLayout({
               <TVTicker />
             </div>
             
-            <div className="flex h-screen overflow-hidden pt-[46px] pb-16 md:pb-0"> {/* pb-16 for Mobile Nav padding on mobile, 0 on desktop */}
+            <div className="flex h-screen overflow-hidden pt-[54px] pb-16 md:pb-0"> {/* pb-16 for Mobile Nav padding on mobile, 0 on desktop */}
               <Sidebar />
               
               <div className="flex-1 flex flex-col w-full md:ml-64 overflow-hidden relative">

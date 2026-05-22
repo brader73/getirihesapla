@@ -31,7 +31,7 @@ export default function Sidebar() {
         />
       )}
       
-      <aside className={`w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-[46px] md:top-0 overflow-y-auto border-r border-slate-800 z-50 transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+      <aside className={`w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-[54px] md:top-0 overflow-y-auto border-r border-slate-800 z-50 transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
       <div className="p-6 border-b border-slate-800 flex items-center justify-between">
         <div 
           onClick={() => window.location.href = '/'}
