@@ -5,7 +5,7 @@ import { auth, db, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signOut, onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import { useMobileMenu } from "@/context/MobileMenuContext";
 
 export default function Header() {
@@ -95,17 +95,14 @@ export default function Header() {
       
       const docPDF = new jsPDF("p", "mm", "a4");
       
-      const canvas = await html2canvas(container, {
-          scale: 1.5, 
-          useCORS: true,
-          backgroundColor: document.documentElement.classList.contains("dark") ? "#020617" : "#f1f5f9"
+      const imgData = await toPng(container, {
+          backgroundColor: document.documentElement.classList.contains("dark") ? "#020617" : "#f1f5f9",
+          pixelRatio: 1.5
       });
-      
-      const imgData = canvas.toDataURL("image/png");
       
       const imgWidth = 190; 
       const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgHeight = (container.offsetHeight * imgWidth) / container.offsetWidth;
       let heightLeft = imgHeight;
       let position = 40; 
       

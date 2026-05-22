@@ -7,7 +7,7 @@ import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, getDocs } from "firebase/firestore";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
@@ -321,20 +321,15 @@ export default function PortfolioPage() {
     element.insertBefore(printHeader, element.firstChild);
 
     try {
-      const canvas = await html2canvas(element, { 
-        scale: 2, 
-        useCORS: true, 
+      const imgData = await toPng(element, { 
         backgroundColor: "#0b1121",
-        onclone: (clonedDoc) => {
-          // Adjust styles if necessary for printing
-        }
+        pixelRatio: 2,
       });
       
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = 190; // margin 10mm each side
       const pageHeight = 297;
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      const imgHeight = (element.offsetHeight * pdfWidth) / element.offsetWidth;
       
       let heightLeft = imgHeight;
       let position = 10;
