@@ -2,6 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import InvestmentSimulator from "@/components/calculators/InvestmentSimulator";
+import InvestorTest from "@/components/portfolio/InvestorTest";
 
 export const metadata: Metadata = {
   title: "Gelişmiş Portföy ve Yatırım Simülasyonu | Korfu Finance",
@@ -83,6 +84,11 @@ export default function PortfoySimulasyonuPage() {
               Kripto gibi yüksek riskli varlıklarda beklenen getiri yüksek olsa da, volatilite (dalgalanma) skoru sebebiyle hedefe ulaşma ihtimali düşebilir. AI motorumuz bu matematiksel olasılıkları analiz ederek size stratejik yorumlar sunar.
             </p>
           </article>
+        </section>
+
+        {/* Viral Investor Personality Test Module */}
+        <section className="mt-8">
+          <InvestorTest />
         </section>
 
       </main>
