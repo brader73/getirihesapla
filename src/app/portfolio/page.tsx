@@ -310,11 +310,13 @@ export default function PortfolioPage() {
 
     try {
       const reportContainer = document.createElement("div");
+      // Place it fixed at 0,0 but with negative z-index so it hides behind the current page
+      // This prevents the browser from skipping rendering (which happens with left: -9999px)
       reportContainer.style.position = "fixed";
       reportContainer.style.top = "0";
-      reportContainer.style.left = "-9999px";
+      reportContainer.style.left = "0";
       reportContainer.style.width = "800px";
-      reportContainer.style.zIndex = "-9999";
+      reportContainer.style.zIndex = "-99999";
       reportContainer.style.pointerEvents = "none";
       reportContainer.style.backgroundColor = "#0b1121"; // Slate 950
       reportContainer.style.color = "#f8fafc";
@@ -400,7 +402,7 @@ export default function PortfolioPage() {
       document.body.appendChild(reportContainer);
 
       // Force browser to layout and paint before capturing (especially important for images)
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const imgData = await toPng(reportContainer, { 
         backgroundColor: "#0b1121",
