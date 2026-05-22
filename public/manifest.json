@@ -1,6 +1,6 @@
 {
-  "name": "Korfu Finance | Premium Terminal",
-  "short_name": "Korfu",
+  "name": "Korfu Finance",
+  "short_name": "Korfu Finance",
   "description": "Profesyonel yatırım ve finans hesaplama terminali",
   "start_url": "/",
   "display": "standalone",

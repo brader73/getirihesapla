@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const crimsonPro = Crimson_Pro({ subsets: ["latin"], variable: "--font-crimson-pro" });
 
 export const metadata: Metadata = {
-  title: "KorfuFinance | Profesyonel Analiz",
+  title: "Korfu Finance | Profesyonel Analiz",
   description: "Profesyonel yatırım ve finans hesaplama terminali.",
   keywords: ["finans", "borsa", "kripto", "yatırım", "analiz", "korfufinance"],
   manifest: "/manifest.json",
@@ -16,16 +16,16 @@ export const metadata: Metadata = {
     apple: '/korfu_app_icon.svg',
   },
   openGraph: {
-    title: "KorfuFinance | Profesyonel Analiz",
+    title: "Korfu Finance | Profesyonel Analiz",
     description: "Profesyonel yatırım ve finans hesaplama terminali.",
     url: "https://www.korfufinance.com",
-    siteName: "KorfuFinance",
+    siteName: "Korfu Finance",
     images: [
       {
         url: "/korfu_app_icon.svg",
         width: 1024,
         height: 1024,
-        alt: "KorfuFinance",
+        alt: "Korfu Finance",
       },
     ],
     locale: "tr_TR",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "KorfuFinance",
+    title: "Korfu Finance",
     description: "Profesyonel yatırım ve finans hesaplama terminali.",
     images: ["/korfu_app_icon.svg"],
   },
