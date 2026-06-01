@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Crimson_Pro } from "next/font/google";
 import "./globals.css";
 import { MarketProvider } from "@/context/MarketContext";
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const crimsonPro = Crimson_Pro({ subsets: ["latin"], variable: "--font-crimson-pro" });
@@ -115,6 +116,7 @@ export default function RootLayout({
             
           </MobileMenuProvider>
         </MarketProvider>
+        <Analytics />
       </body>
     </html>
   );
